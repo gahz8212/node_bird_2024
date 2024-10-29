@@ -1,13 +1,15 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom'
-import AuthPage from './pages/AuthPage';
-import UseCallback from './pages/UseCallback';
+import LoginPage from './pages/LoginPage';
+import JoinPage from './pages/JoinPage';
+
 import './lib/styles/index.scss'
 const App = () => {
   return (
     <Routes>
-      <Route path='/' element={<AuthPage />} />
-      <Route path='/useCallback' element={<UseCallback />} />
+      <Route path='/' element={<LoginPage />} />
+      <Route path='/join' element={<JoinPage />} />
+
     </Routes>
   );
 };

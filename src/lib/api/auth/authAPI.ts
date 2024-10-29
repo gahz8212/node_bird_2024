@@ -10,3 +10,9 @@ export const join = (joinData: {
 }) => {
   return client.post("/auth/join", joinData);
 };
+export const logout = () => {
+  return client.post("/auth/logout");
+};
+export const check = () => {
+  return client.get("/auth/check");
+};

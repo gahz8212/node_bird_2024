@@ -1,0 +1,65 @@
+.wrap-authForm {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: beige;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .authForm {
+    background-color: azure;
+    width: 400px;
+    // padding: 1rem;
+    border-radius: 8px;
+    .logo-area {
+      margin: 0 auto;
+      text-align: center;
+    }
+    .white-box {
+      padding: 1.5rem;
+    }
+    .controlls {
+      input,
+      select {
+        border: none;
+        outline: none;
+        padding: 0.3rem;
+        font-size: 0.9rem;
+      }
+      input {
+        border-bottom: 3px solid green;
+        width: 95%;
+        &:nth-of-type(1) {
+          width: 70%;
+        }
+        & + input {
+          margin-top: 1rem;
+        }
+
+        & + select {
+          margin-left: 1rem;
+        }
+      }
+      .inputs {
+        margin-bottom: 1rem;
+        input {
+          width: 40%;
+        }
+      }
+      button {
+        border: none;
+        outline: none;
+        margin-top: 1rem;
+        width: 98%;
+        background-color: lightblue;
+        padding: 0.5rem;
+        transition: 1s;
+        &:hover {
+          background-color: darkcyan;
+        }
+      }
+    }
+  }
+}

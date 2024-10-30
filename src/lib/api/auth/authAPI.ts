@@ -1,18 +1,20 @@
 import client from "../client";
 export const login = (loginData: { email: string; password: string }) => {
-  return client.post("/auth/login", loginData);
+  console.log(loginData);
+  return client.post("/login", loginData);
 };
 export const join = (joinData: {
   email: string;
   password: string;
-  name: string;
-  rank: number;
+  name?: string;
+  rank?: number;
 }) => {
-  return client.post("/auth/join", joinData);
+  console.log(joinData);
+  return client.post("/join", joinData);
 };
 export const logout = () => {
-  return client.post("/auth/logout");
+  return client.post("/logout");
 };
 export const check = () => {
-  return client.get("/auth/check");
+  return client.get("/check");
 };

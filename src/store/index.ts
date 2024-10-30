@@ -1,13 +1,24 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { all, call } from "redux-saga/effects";
 import authSlice from "./slices/authSlice";
+import userSlice, { userActions } from "./slices/userSlice";
 import { authSaga } from "./sagas/authSaga";
+import { userSaga } from "./sagas/userSaga";
 import createSagaMiddleware from "redux-saga";
-const reducers = combineReducers({ auth: authSlice });
+const reducers = combineReducers({ auth: authSlice, user: userSlice });
 function* rootSaga() {
-  yield all([call(authSaga)]);
+  yield all([call(authSaga), call(userSaga)]);
 }
 const sagaMiddleware = createSagaMiddleware();
+const getUser = () => {
+  try {
+    const user = localStorage.getItem("user");
+    if (!user) return;
+    store.dispatch(userActions.check());
+  } catch (e) {
+    console.error("localstorage is not working");
+  }
+};
 const createStore = () => {
   const store = configureStore({
     reducer: reducers,
@@ -18,5 +29,6 @@ const createStore = () => {
   return store;
 };
 const store = createStore();
+getUser();
 export default store;
 export type RootState = ReturnType<typeof store.getState>;

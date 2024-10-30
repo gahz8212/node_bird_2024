@@ -13,10 +13,11 @@ function* loginSaga(action: { payload: { email: string; password: string } }) {
   }
 }
 function* joinSaga(action: {
-  payload: { email: string; password: string; name: string; rank: number };
+  payload: { email: string; password: string; name?: string; rank?: number };
 }) {
   try {
     const response: { data: string } = yield call(authAPI.join, action.payload);
+    console.log(response.data)
     yield put(authActions.joinSuccess(response.data));
   } catch (e: any) {
     yield put(authActions.joinFailure(e.response.data));

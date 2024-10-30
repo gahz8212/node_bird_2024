@@ -2,15 +2,19 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom'
 import LoginPage from './pages/LoginPage';
 import JoinPage from './pages/JoinPage';
-
+import HomePage from './pages/HomePage';
+import { Reset } from 'styled-reset'
 import './lib/styles/index.scss'
 const App = () => {
   return (
-    <Routes>
-      <Route path='/' element={<LoginPage />} />
-      <Route path='/join' element={<JoinPage />} />
-
-    </Routes>
+    <React.Fragment>
+      <Reset />
+      <Routes>
+        <Route path='/' element={<LoginPage />} />
+        <Route path='/join' element={<JoinPage />} />
+        <Route path='/home' element={<HomePage />} />
+      </Routes>
+    </React.Fragment>
   );
 };
 

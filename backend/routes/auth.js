@@ -10,7 +10,7 @@ router.post("/join", async (req, res) => {
     if (exUser) {
       return res.status(400).json("이미 등록된 이메일 입니다.");
     }
-    const hash = bcrypt.hash(password, 12);
+    const hash = await bcrypt.hash(password, 12);
     await User.create({ email, name, password: hash, rank });
     return res.status(200).json("join_ok");
   } catch (e) {
@@ -48,8 +48,8 @@ router.post("/logout", (req, res) => {
   });
 });
 router.get("/check", (req, res) => {
-  const { id, name, rank } = req.user;
   try {
+    const { id, name, rank } = req.user;
     return res.status(200).json({ id, name, rank });
   } catch (e) {
     return res.status(400).json(e.message);

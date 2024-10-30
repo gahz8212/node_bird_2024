@@ -3,7 +3,7 @@ import { RootState } from "../";
 type State = {
   [key: string]: { [key: string]: string | number | boolean };
   login: { email: string; password: string };
-  join: { email: string; password: string; name: string; rank: number };
+  join: { email: string; password: string; name?: string; rank?: number };
   status: { error: string; message: string; loading: boolean };
 };
 const initialState: State = {
@@ -30,8 +30,9 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    initForm: (state, { payload: { form } }) => {
+    initForm: (state, { payload:  form  }) => {
       state[form] = initialState[form];
+      state.status=initialState.status
     },
     changeField: (state, { payload: { form, key, value } }) => {
       state[form][key] = value;
@@ -59,8 +60,8 @@ const authSlice = createSlice({
       action: PayloadAction<{
         email: string;
         password: string;
-        name: string;
-        rank: number;
+        name?: string;
+        rank?: number;
       }>
     ) => {
       state.status.message = "";

@@ -1,0 +1,42 @@
+.Wrap-authBar {
+  position: fixed;
+  width: 100%;
+
+  //   background-color: yellow;
+
+  .authBar {
+    margin: 0 auto;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .logo,
+    .logo {
+      img {
+        width: 70px;
+      }
+    }
+    .button {
+      button,
+      Link {
+        border: none;
+        outline: none;
+        background: transparent;
+      }
+    }
+  }
+}
+.space {
+  height: 80px;
+  background-color: green;
+}
+@media screen and (min-width: 1200px) {
+  .authBar {
+    width: 1200px;
+  }
+}
+@media screen and (max-width: 1200px) {
+  .authBar {
+    width: 70%;
+  }
+}

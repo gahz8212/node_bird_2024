@@ -1,0 +1,14 @@
+.Wrap-chat {
+  margin: 0 auto;
+  width: 500px;
+  .control {
+    justify-content: flex-end;
+
+    display: flex;
+    align-items: center;
+  }
+  .chats {
+    border: 1px solid black;
+    min-height: 500px;
+  }
+}

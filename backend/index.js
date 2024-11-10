@@ -8,8 +8,12 @@ const passportConfig = require("./passport");
 const { sequelize } = require("./models");
 const authRoute = require("./routes/auth");
 const itemRoute = require("./routes/item");
-const orderRoute = require("./routes/order");
+const chatRoute = require("./routes/chat");
+const { createServer } = require("http");
+const webServer = require("./socket");
+
 const app = express();
+const server = createServer(app);
 passportConfig();
 sequelize
   .sync({ force: false })
@@ -23,19 +27,20 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/", express.static(path.join(__dirname, "public")));
 app.use("/img", express.static(path.join(__dirname, "uploads")));
 app.use(cookieParser(process.env.COOKIE_SECRET));
-app.use(
-  session({
-    saveUninitialized: false,
-    resave: false,
-    secret: process.env.COOKIE_SECRET,
-    cookie: { httpOnly: true, secure: false },
-  })
-);
+
+const sessionMiddleware = session({
+  saveUninitialized: false,
+  resave: false,
+  secret: process.env.COOKIE_SECRET,
+  cookie: { httpOnly: true, secure: false },
+});
+app.use(sessionMiddleware);
 app.use(passport.initialize());
 app.use(passport.session());
 app.use("/", authRoute);
 app.use("/item", itemRoute);
-app.use("/order", orderRoute);
-app.listen(app.get("port"), () => {
+app.use("/chat", chatRoute);
+server.listen(app.get("port"), () => {
   console.log(`${app.get("port")}번 포트에서 서버 대기 중`);
 });
+webServer(app, server, sessionMiddleware);

@@ -4,8 +4,10 @@ type Props = {
     onChange: (e: any) => void
     onSubmit: (e: any) => void;
     message: string;
+    chats: string[]
 }
-const HomeComponent: React.FC<Props> = ({ message, onSubmit, onChange }) => {
+const HomeComponent: React.FC<Props> = ({ message, onSubmit, onChange, chats }) => {
+
     return (
         <div>
             Here is Home
@@ -16,7 +18,10 @@ const HomeComponent: React.FC<Props> = ({ message, onSubmit, onChange }) => {
                     <input type="text" onChange={onChange} value={message} />
                     <button>전송</button>
                 </form>
-                <div className="chats"></div>
+                <div className="chats">
+                    {/* {typeof chats} */}
+                    {chats?.map((chat, index) => <div key={index}>{chat}</div>)}
+                </div>
             </div>
         </div>
     );

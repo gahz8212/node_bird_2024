@@ -10,7 +10,7 @@ const AuthBarComponent: React.FC<Props> = ({ auth, logout }) => {
         <>
             <div className='Wrap-authBar'>
                 <div className="authBar">
-                    <div className="logo"><img src="/logo192.png" alt="logo" /></div>
+                    <div className="logo"></div>
                     <div className="button">
                         {auth ? <button onClick={logout}>LOGOUT</button> : <Link to='/'>LOGIN</Link>}
                     </div>

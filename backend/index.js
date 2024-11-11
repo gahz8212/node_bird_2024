@@ -4,6 +4,7 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const path = require("path");
 const passport = require("passport");
+const cors = require("cors");
 const passportConfig = require("./passport");
 const { sequelize } = require("./models");
 const authRoute = require("./routes/auth");
@@ -13,6 +14,7 @@ const { createServer } = require("http");
 const webServer = require("./socket");
 
 const app = express();
+app.use(cors());
 const server = createServer(app);
 passportConfig();
 sequelize
@@ -39,7 +41,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use("/", authRoute);
 app.use("/item", itemRoute);
-app.use("/chat", chatRoute);
+app.use("/home", chatRoute);
 server.listen(app.get("port"), () => {
   console.log(`${app.get("port")}번 포트에서 서버 대기 중`);
 });

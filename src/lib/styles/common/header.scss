@@ -1,0 +1,76 @@
+.authbarPosition {
+  position: fixed;
+  width: 100%;
+  background-color: white;
+  box-shadow: 4px 4px 8px gray;
+  z-index: 3;
+  .authbarWraper {
+    margin: 0 auto;
+    display: flex;
+    width: 1200px;
+    height: 70px;
+    justify-content: space-between;
+    align-items: center;
+    .auth-switch {
+      border: none;
+      outline: none;
+      background-color: transparent;
+      cursor: pointer;
+      font-size: 1.2rem;
+      font-weight: bold;
+      position: relative;
+
+      &.out:hover::before,
+      &.out:not(:hover)::before {
+        background-color: orange;
+      }
+      &.in:hover::before,
+      &.in:not(:hover)::before {
+        background-color: darkcyan;
+      }
+      &::before {
+        transition: width 0.5s;
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        width: 0;
+        height: 3px;
+        left: 50%;
+        background-color: black;
+        transform: translateX(-50%);
+      }
+      &:hover::before {
+        width: 100%;
+      }
+
+      &.in {
+        color: orange;
+      }
+      &.out {
+        color: darkcyan;
+        // &:hover {
+        //   border-bottom: 2px;
+        // }
+      }
+    }
+  }
+}
+.space {
+  height: 80px;
+}
+@media screen and (max-width: 1200px) {
+  .authbarPosition {
+    background-color: green;
+    .authbarWraper {
+      width: 768px;
+    }
+  }
+}
+@media screen and (max-width: 768px) {
+  .authbarPosition {
+    background-color: yellowgreen;
+    .authbarWraper {
+      max-width: 400px;
+    }
+  }
+}

@@ -43,6 +43,7 @@ router.post("/logout", (req, res) => {
     if (e) {
       return;
     }
+    
     req.session.destroy();
     return res.send("logout_ok");
   });

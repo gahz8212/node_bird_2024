@@ -12,7 +12,7 @@ const App = () => {
       <Routes>
         <Route path='/' element={<LoginPage />} />
         <Route path='/join' element={<JoinPage />} />
-        <Route path='/home' element={<HomePage />} />
+        <Route path='/home/:id' element={<HomePage />} />
       </Routes>
     </React.Fragment>
   );

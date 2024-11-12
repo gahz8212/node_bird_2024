@@ -45,4 +45,4 @@ app.use("/home", chatRoute);
 server.listen(app.get("port"), () => {
   console.log(`${app.get("port")}번 포트에서 서버 대기 중`);
 });
-webServer(app, server, sessionMiddleware);
+webServer(app, server, sessionMiddleware, passport);

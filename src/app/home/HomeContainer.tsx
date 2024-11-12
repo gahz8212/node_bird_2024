@@ -3,8 +3,8 @@ import HomeComponent from './HomeComponent';
 import io from 'socket.io-client'
 import axios from 'axios';
 
-// const socket = io('/chat')
-const socket = io('/room')
+const socket = io('/chat')
+// const socket = io('/room')
 type Props = {}
 const HomeContainer: React.FC<Props> = () => {
     const once = useRef(true)
@@ -22,7 +22,7 @@ const HomeContainer: React.FC<Props> = () => {
 
     }
     const send = async () => {
-        return await axios.post('/home/chat', { message })
+        return await axios.post('/home/room/1/chat', { message })
     }
     useEffect(() => {
         if (once.current === true) {

@@ -31,7 +31,7 @@ const LoginForm: React.FC<Props> = () => {
     }, [dispatch, status.message])
     useEffect(() => {
         if (auth) {
-            navigate('/home')
+            navigate('/home/1')
             try {
 
                 localStorage.setItem("user", JSON.stringify(auth))

@@ -1,18 +1,17 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 type Props = {
     onChange: (e: any) => void
     onSubmit: (e: any) => void;
     message: string;
-    chats: string[]
+    chats: { message: string, user: string }[]
+    scrollRef: React.RefObject<HTMLDivElement>;
+    auth: { name: string; } | null;
 }
-const HomeComponent: React.FC<Props> = ({ message, onSubmit, onChange, chats }) => {
+const HomeComponent: React.FC<Props> = ({ auth, scrollRef, message, onSubmit, onChange, chats }) => {
     // const [ScrollY, setScrollY] = useState(0);
-    const scrollRef = useRef<HTMLDivElement>(null)
-    useEffect(() => {
 
-        scrollRef.current?.scrollTo(0, 400)
-    }, [chats])
+
     return (
         <div>
             Here is Home
@@ -26,7 +25,13 @@ const HomeComponent: React.FC<Props> = ({ message, onSubmit, onChange, chats }) 
                 <div className="chats" ref={scrollRef}>
 
 
-                    {chats?.map((chat, index) => <div key={index}>{chat}</div>)}
+                    {chats?.map((chat, index) => <div key={index} className={`chat ${chat.user === 'system' ? 'center' : chat.user === auth?.name ? 'right' : 'left'}`}>
+                        <div className='username'>
+                            {chat.user === 'system' ? '' : chat.user === auth?.name ? '' : auth?.name}
+                        </div>
+                        {chat.message}
+
+                    </div>)}
 
                 </div>
                 <Link to='/home'>방 나가기</Link>

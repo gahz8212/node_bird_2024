@@ -10,7 +10,24 @@
   .chats {
     border: 1px solid black;
     height: 300px;
-
     overflow-y: auto;
+    padding: 1rem;
+    & .username {
+      margin-bottom: 0.5rem;
+      color: gray;
+      font-size: 0.8rem;
+    }
+    & .chat + .chat {
+      margin-top: 1rem;
+    }
+    & .left {
+      text-align: left;
+    }
+    & .right {
+      text-align: right;
+    }
+    & .center {
+      text-align: center;
+    }
   }
 }

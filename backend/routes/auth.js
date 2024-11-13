@@ -30,6 +30,13 @@ router.post("/login", (req, res) => {
         if (loginError) {
           throw new Error(loginError);
         } else {
+          req.app
+            .get("io")
+            .of("/room")
+            .emit("chat", {
+              message: `${req.user.name}님이 로그인 됨`,
+              user: "system",
+            });
           return res.status(200).json("login_ok");
         }
       });
@@ -39,11 +46,18 @@ router.post("/login", (req, res) => {
   })(req, res);
 });
 router.post("/logout", (req, res) => {
+  req.app
+    .get("io")
+    .of("/room")
+    .emit("chat", {
+      message: `${req.user.name}님이 로그아웃 됨`,
+      user: "system",
+    });
   req.logout((e) => {
     if (e) {
       return;
     }
-    
+
     req.session.destroy();
     return res.send("logout_ok");
   });

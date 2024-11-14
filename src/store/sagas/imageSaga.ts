@@ -1,11 +1,11 @@
 import { put, call, takeLatest } from "redux-saga/effects";
-import * as imageAPI from "../../lib/api/image";
+import * as imageAPI from "../../lib/api/image/imageAPI";
 import { imageActions } from "../slices/imageSlice";
-import { userActions } from "../slices/userSlice";
-function* addImageSaga(action: { payload: { image: FormData } }) {
+
+function* addImageSaga(action: { payload: FormData }) {
   try {
-    const response: { data: { image: FormData } } = yield call(
-      imageAPI,
+    const response: { data: { url: string }[] } = yield call(
+      imageAPI.addImage,
       action.payload
     );
     yield put(imageActions.addImageSuccess(response.data));

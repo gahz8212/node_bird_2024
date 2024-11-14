@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import HomeComponent from './HomeComponent';
-import { useSelector } from 'react-redux/es/hooks/useSelector';
+import { useDispatch, useSelector } from 'react-redux';
 import { userData } from '../../store/slices/userSlice';
+import { imageData, imageActions } from '../../store/slices/imageSlice'
+import { imageInsert } from '../../lib/utils/createFormData';
 import io from 'socket.io-client'
 import axios from 'axios';
 
@@ -9,7 +11,9 @@ import axios from 'axios';
 const socket = io('/room')
 type Props = {}
 const HomeContainer: React.FC<Props> = () => {
+    const dispatch = useDispatch();
     const { auth } = useSelector(userData)
+    const { imageList, status } = useSelector(imageData)
     const once = useRef(true)
     const scrollRef = useRef<HTMLDivElement>(null)
     const [message, setMessage] = useState('')
@@ -17,6 +21,16 @@ const HomeContainer: React.FC<Props> = () => {
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
         setMessage(value)
+
+    }
+    const onInsertImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+
+
+        // imageList가 비어있으면 비어 있는대로 => 생성
+        // imageList에 데이터가 있으면 있는대로 => 수정
+        // 결과적으로 imageList와 조합해서 새로운 formData를 만들어 주는 함수인 것
+        const formData = imageInsert(e, imageList)
+        dispatch(imageActions.addImage(await formData))
 
     }
     const onSubmit = async (e: any) => {
@@ -47,7 +61,7 @@ const HomeContainer: React.FC<Props> = () => {
     }, [chats])
     return (
         <div>
-            <HomeComponent auth={auth} message={message} scrollRef={scrollRef} onChange={onChange} onSubmit={onSubmit} chats={chats} />
+            <HomeComponent imageList={imageList} onInsertImage={onInsertImage} auth={auth} message={message} scrollRef={scrollRef} onChange={onChange} onSubmit={onSubmit} chats={chats} />
         </div>
     );
 };

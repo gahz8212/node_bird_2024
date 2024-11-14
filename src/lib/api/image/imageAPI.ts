@@ -1,4 +1,5 @@
 import client from "../client";
-export const addImage = (image: FormData) => {
-  return client.post("/item/images", image);
+export const addImage = (formData: FormData) => {
+  console.log("ok");
+  return client.post("/item/images", formData);
 };

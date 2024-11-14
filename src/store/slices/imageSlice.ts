@@ -1,33 +1,40 @@
 import { createSlice, createSelector, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "..";
 type State = {
-  image: FormData | null;
+  imageList: { url: string }[];
   status: { message: string; loading: boolean };
 };
 const initialState: State = {
-  image: null,
+  imageList: [],
   status: { message: "", loading: false },
 };
 const imageSelector = (state: RootState) => {
-  return state.images.image;
+  return state.images.imageList;
 };
-export const imageData = createSelector(imageSelector, (image) => ({ image }));
+const statusSelector = (state: RootState) => {
+  return state.images.status;
+};
+export const imageData = createSelector(
+  imageSelector,
+  statusSelector,
+  (imageList, status) => ({ imageList, status })
+);
 const imageSlice = createSlice({
   name: "images",
   initialState,
   reducers: {
-    addImage: (state, action: PayloadAction<{ image: FormData }>) => {
-      state.image = null;
+    addImage: (state, action: PayloadAction<FormData>) => {
+      state.imageList = [];
       state.status.message = "";
       state.status.loading = true;
     },
     addImageSuccess: (state, { payload: image }) => {
-      state.image = image;
+      state.imageList = image;
       state.status.message = "image_add_ok";
       state.status.loading = false;
     },
     addImageFailure: (state, { payload: error }) => {
-      state.image = null;
+      state.imageList = [];
       state.status.message = error;
       state.status.loading = false;
     },

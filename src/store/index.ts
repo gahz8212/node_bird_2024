@@ -5,6 +5,7 @@ import userSlice, { userActions } from "./slices/userSlice";
 import imageSlice from "./slices/imageSlice";
 import { authSaga } from "./sagas/authSaga";
 import { userSaga } from "./sagas/userSaga";
+import { imageSaga } from "./sagas/imageSaga";
 import createSagaMiddleware from "redux-saga";
 const reducers = combineReducers({
   auth: authSlice,
@@ -12,7 +13,7 @@ const reducers = combineReducers({
   images: imageSlice,
 });
 function* rootSaga() {
-  yield all([call(authSaga), call(userSaga)]);
+  yield all([call(authSaga), call(userSaga), call(imageSaga)]);
 }
 const sagaMiddleware = createSagaMiddleware();
 const getUser = () => {

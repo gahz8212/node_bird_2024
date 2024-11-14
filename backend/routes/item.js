@@ -5,10 +5,10 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
   storage: multer.diskStorage({
     destination(req, file, cb) {
-      cb(null, "/uploads");
+      cb(null, "uploads/");
     },
     filename(req, file, cb) {
-      file.originalname = Buffer.from(file.originalname, "latin1").goString(
+      file.originalname = Buffer.from(file.originalname, "latin1").toString(
         "utf8"
       );
       cb(null, file.originalname);
@@ -17,6 +17,7 @@ const upload = multer({
 });
 router.post("/images", upload.array("images"), async (req, res) => {
   try {
+    console.log("image_ok");
     const files = req.files.map((file) => ({ url: `/img/${file.filename}` }));
     return res.status(200).json(files);
   } catch (e) {

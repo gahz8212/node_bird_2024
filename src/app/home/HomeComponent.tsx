@@ -5,12 +5,13 @@ type Props = {
     onInsertImage: (e: any) => void;
     onSubmit: (e: any) => void;
     message: string;
-    chats: { message: string, user: string }[]
+    chats: { message: string, user: string, images: { url: string }[] }[]
     scrollRef: React.RefObject<HTMLDivElement>;
     auth: { name: string; } | null;
-    imageList: { url: string }[]
+
 }
-const HomeComponent: React.FC<Props> = ({ imageList, onInsertImage, auth, scrollRef, message, onSubmit, onChange, chats }) => {
+const HomeComponent: React.FC<Props> = ({ onInsertImage, auth, scrollRef, message, onSubmit, onChange, chats }) => {
+    // console.log(chats.map(chat => chat.image.map(img => img.url)))
     return (
         <div>
             Here is Home
@@ -31,8 +32,8 @@ const HomeComponent: React.FC<Props> = ({ imageList, onInsertImage, auth, scroll
                         </div>
                         {chat.message}
                         <div>
+                            {chat.images && chat.images.map((img, index) => <img key={index} src={img.url} alt='img' width='100px'></img>)}
 
-                            {imageList && imageList.map(image => <img src={image.url} alt='img' width='100px'></img>)}
                         </div>
                     </div>)}
 

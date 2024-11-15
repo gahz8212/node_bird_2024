@@ -2,18 +2,18 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { all, call } from "redux-saga/effects";
 import authSlice from "./slices/authSlice";
 import userSlice, { userActions } from "./slices/userSlice";
-import imageSlice from "./slices/imageSlice";
+import chatSlice from "./slices/chatSlice";
 import { authSaga } from "./sagas/authSaga";
 import { userSaga } from "./sagas/userSaga";
-import { imageSaga } from "./sagas/imageSaga";
+import { chatSaga } from "./sagas/chatSaga";
 import createSagaMiddleware from "redux-saga";
 const reducers = combineReducers({
   auth: authSlice,
   user: userSlice,
-  images: imageSlice,
+  chat: chatSlice,
 });
 function* rootSaga() {
-  yield all([call(authSaga), call(userSaga), call(imageSaga)]);
+  yield all([call(authSaga), call(userSaga), call(chatSaga)]);
 }
 const sagaMiddleware = createSagaMiddleware();
 const getUser = () => {

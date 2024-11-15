@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import HomeComponent from './HomeComponent';
 import { useDispatch, useSelector } from 'react-redux';
 import { userData } from '../../store/slices/userSlice';
-import { imageData, imageActions } from '../../store/slices/imageSlice'
+import { chatData, chatActions } from '../../store/slices/chatSlice'
 import { imageInsert } from '../../lib/utils/createFormData';
 import io from 'socket.io-client'
 import axios from 'axios';
@@ -13,11 +13,11 @@ type Props = {}
 const HomeContainer: React.FC<Props> = () => {
     const dispatch = useDispatch();
     const { auth } = useSelector(userData)
-    const { imageList, status } = useSelector(imageData)
+    const { imageList, status } = useSelector(chatData)
     const once = useRef(true)
     const scrollRef = useRef<HTMLDivElement>(null)
     const [message, setMessage] = useState('')
-    const [chats, setChats] = useState<{ message: string, user: string }[]>([])
+    const [chats, setChats] = useState<{ message: string, user: string, images: { url: string }[] }[]>([])
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
         setMessage(value)
@@ -30,7 +30,7 @@ const HomeContainer: React.FC<Props> = () => {
         // imageList에 데이터가 있으면 있는대로 => 수정
         // 결과적으로 imageList와 조합해서 새로운 formData를 만들어 주는 함수인 것
         const formData = imageInsert(e, imageList)
-        dispatch(imageActions.addImage(await formData))
+        dispatch(chatActions.addImage(await formData))
 
     }
     const onSubmit = async (e: any) => {
@@ -47,8 +47,8 @@ const HomeContainer: React.FC<Props> = () => {
             once.current = false;
             return;
         } else {
-            socket.on('chat', (data: { message: string, user: string }) => {
-                console.log(data.message)
+            socket.on('chat', (data: { message: string, user: string, images: { url: string }[] }) => {
+                console.log(data)
                 setChats(prev => [...prev, data])
             })
 
@@ -61,7 +61,7 @@ const HomeContainer: React.FC<Props> = () => {
     }, [chats])
     return (
         <div>
-            <HomeComponent imageList={imageList} onInsertImage={onInsertImage} auth={auth} message={message} scrollRef={scrollRef} onChange={onChange} onSubmit={onSubmit} chats={chats} />
+            <HomeComponent onInsertImage={onInsertImage} auth={auth} message={message} scrollRef={scrollRef} onChange={onChange} onSubmit={onSubmit} chats={chats} />
         </div>
     );
 };

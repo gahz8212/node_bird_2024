@@ -9,18 +9,18 @@ const initialState: State = {
   status: { message: "", loading: false },
 };
 const imageSelector = (state: RootState) => {
-  return state.images.imageList;
+  return state.chat.imageList;
 };
 const statusSelector = (state: RootState) => {
-  return state.images.status;
+  return state.chat.status;
 };
-export const imageData = createSelector(
+export const chatData = createSelector(
   imageSelector,
   statusSelector,
   (imageList, status) => ({ imageList, status })
 );
-const imageSlice = createSlice({
-  name: "images",
+const chatSlice = createSlice({
+  name: "chat",
   initialState,
   reducers: {
     addImage: (state, action: PayloadAction<FormData>) => {
@@ -28,9 +28,9 @@ const imageSlice = createSlice({
       state.status.message = "";
       state.status.loading = true;
     },
-    addImageSuccess: (state, { payload: image }) => {
-      state.imageList = image;
-      state.status.message = "image_add_ok";
+    addImageSuccess: (state, { payload: message }) => {
+      // state.imageList = image;
+      state.status.message = message;
       state.status.loading = false;
     },
     addImageFailure: (state, { payload: error }) => {
@@ -40,5 +40,5 @@ const imageSlice = createSlice({
     },
   },
 });
-export default imageSlice.reducer;
-export const imageActions = imageSlice.actions;
+export default chatSlice.reducer;
+export const chatActions = chatSlice.actions;

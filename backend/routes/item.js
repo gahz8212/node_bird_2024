@@ -15,15 +15,15 @@ const upload = multer({
     },
   }),
 });
-router.post("/images", upload.array("images"), async (req, res) => {
-  try {
-    console.log("image_ok");
-    const files = req.files.map((file) => ({ url: `/img/${file.filename}` }));
-    return res.status(200).json(files);
-  } catch (e) {
-    res.status(400).json(e.message);
-  }
-});
+// router.post("/images", upload.array("images"), async (req, res) => {
+//   try {
+//     console.log("image_ok");
+//     const files = req.files.map((file) => ({ url: `/img/${file.filename}` }));
+//     return res.status(200).json(files);
+//   } catch (e) {
+//     res.status(400).json(e.message);
+//   }
+// });
 module.exports = router;
 // const express = require("express");
 // const multer = require("multer");

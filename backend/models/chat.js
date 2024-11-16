@@ -5,6 +5,7 @@ module.exports = class Chat extends Sequelize.Model {
       {
         name: { type: Sequelize.STRING(10) },
         chat: { type: Sequelize.STRING(150) },
+        image: { type: Sequelize.STRING(200) },
       },
       {
         sequelize,

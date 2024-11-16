@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const { Chat, Image, User } = require("../models");
+const { Chat, User } = require("../models");
 const { use } = require("passport");
 const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
@@ -21,13 +21,22 @@ router.post("/images", upload.array("images"), async (req, res) => {
   try {
     const files = req.files.map((file) => ({ url: `/img/${file.filename}` }));
     const user = await User.findOne({ where: { id: req.user.id } });
-    // console.log("files", files);
-    const images = await Promise.all(
-      files.map((file) =>
-        Image.create({ image: file.url, UserId: req.user.id })
-      )
-    );
-    await user.addImages(images.map((image) => image[0]));
+
+    const images = files.map((file) => file.url).toString();
+    const image = await Chat.create({ image: images, name: req.user.name });
+    user.addChat(image);
+    // console.log(
+    images.split(",").map((image) => ({
+      url: `${image}`,
+    }));
+    // );
+
+    // const images = await Promise.all(
+    //   files.map((file) =>
+    //     Chat.create({ image: file.url, UserId: req.user.id })
+    //   )
+    // );
+    // await user.addImages(images.map((image) => image[0]));
 
     req.app
       .get("io")

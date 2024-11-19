@@ -1,4 +1,5 @@
 const { Server } = require("socket.io");
+const users = [];
 function onlyForHandshake(middleware) {
   return (req, res, next) => {
     const isHandshake = req._query.sid === undefined;
@@ -30,7 +31,13 @@ module.exports = (app, server, sessionMiddleware, passport) => {
   // const chat = io.of("/chat");
   room.on("connection", (socket) => {
     console.log("room 네임스페이스에 연결됨.");
-
+    const req = socket.request;
+    if (!users.includes(req.user.name)) {
+      users.push(req.user.name);
+    }
+    room.users = users;
+    console.log(users);
+    socket.emit("userList", users);
     socket.on("disconnect", () => {
       console.log("room 네임스페이스에서 해제 됨.");
     });

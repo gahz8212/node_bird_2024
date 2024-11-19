@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const { Chat, User } = require("../models");
-const { use } = require("passport");
+const { Op } = require("sequelize");
+
 const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
   storage: multer.diskStorage({
@@ -20,6 +21,7 @@ const upload = multer({
 router.post("/images", upload.array("images"), async (req, res) => {
   try {
     const files = req.files.map((file) => ({ url: `/img/${file.filename}` }));
+
     const user = await User.findOne({ where: { id: req.user.id } });
 
     const images = files.map((file) => file.url).toString();
@@ -29,26 +31,13 @@ router.post("/images", upload.array("images"), async (req, res) => {
     images.split(",").map((image) => ({
       url: `${image}`,
     }));
-    // );
-
-    // const images = await Promise.all(
-    //   files.map((file) =>
-    //     Chat.create({ image: file.url, UserId: req.user.id })
-    //   )
-    // );
-    // await user.addImages(images.map((image) => image[0]));
+    console.log("images", images);
 
     req.app
       .get("io")
       .of("/room")
-      .emit("chat", { user: req.user.name, images: files });
+      .emit("chat", { name: req.user.name, image: images });
 
-    const userChat = await Chat.findAll({
-      where: { id: 3 },
-      attributes: ["name"],
-      include: [User, Image],
-    });
-    console.log(userChat);
     return res.status(200).json("image_ok");
   } catch (e) {
     return res.status(400).json(e.message);
@@ -65,7 +54,25 @@ router.post("/chat", async (req, res) => {
     .get("io")
     .of("/room")
     // .to(id)
-    .emit("chat", { message, user: req.user.name });
+    .emit("chat", { chat: message, name: req.user.name });
   return res.send("ok");
+});
+router.get("/all", async (req, res) => {
+  try {
+    const startDay = new Date();
+    const endDay = new Date();
+    startDay.setDate(startDay.getDate() - 1);
+    endDay.setDate(endDay.getDate());
+
+    const chats = await Chat.findAll({
+      where: {
+        createdAt: { [Op.between]: [startDay, endDay] },
+      },
+    });
+
+    return res.status(200).json(chats);
+  } catch (e) {
+    return res.status(400).json(e.message);
+  }
 });
 module.exports = router;

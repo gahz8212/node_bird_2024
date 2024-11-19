@@ -13,6 +13,19 @@ function* addImageSaga(action: { payload: FormData }) {
     yield put(chatActions.addImageFailure(e.response.data));
   }
 }
+function* getChatsSaga() {
+  try {
+    const response: {
+      data: { chat: string; name: string; image: string }[];
+    } = yield call(chatAPI.getChats);
+    yield put(chatActions.getChatsSuccess(response.data));
+    // console.log("saga:messages", response.data);
+  } catch (e: any) {
+    yield put(chatActions.getChatsFailure(e.response.data));
+    console.error(e);
+  }
+}
 export function* chatSaga() {
   yield takeLatest(chatActions.addImage, addImageSaga);
+  yield takeLatest(chatActions.getChats, getChatsSaga);
 }

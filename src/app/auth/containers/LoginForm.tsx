@@ -5,6 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { authData, authActions } from '../../../store/slices/authSlice';
 import { userData, userActions } from '../../../store/slices/userSlice';
+import { chatActions } from '../../../store/slices/chatSlice';
+import io from 'socket.io-client';
+const socket = io('/room')
 
 type Props = {}
 const LoginForm: React.FC<Props> = () => {
@@ -33,11 +36,17 @@ const LoginForm: React.FC<Props> = () => {
         if (auth) {
             navigate('/home')
             try {
-
+                dispatch(chatActions.getChats())
                 localStorage.setItem("user", JSON.stringify(auth))
             } catch (e) { console.error('localstorage is not working') }
         }
-    }, [auth, navigate])
+    }, [auth, navigate, dispatch])
+    useEffect(() => {
+        socket.on('userList', data => {
+            console.log(data)
+        })
+
+    })
     return (
         <div>
             <AuthTemplate>{<AuthForm form={'login'} onChange={onChange} formData={login} onSubmit={onLogin} />}</AuthTemplate>

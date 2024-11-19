@@ -2,14 +2,19 @@ import { createSlice, createSelector, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "..";
 type State = {
   imageList: { url: string }[];
+  messages: { name: string; chat: string; image: string }[];
   status: { message: string; loading: boolean };
 };
 const initialState: State = {
   imageList: [],
+  messages: [],
   status: { message: "", loading: false },
 };
 const imageSelector = (state: RootState) => {
   return state.chat.imageList;
+};
+const messagesSelector = (state: RootState) => {
+  return state.chat.messages;
 };
 const statusSelector = (state: RootState) => {
   return state.chat.status;
@@ -17,7 +22,8 @@ const statusSelector = (state: RootState) => {
 export const chatData = createSelector(
   imageSelector,
   statusSelector,
-  (imageList, status) => ({ imageList, status })
+  messagesSelector,
+  (imageList, status, messages) => ({ imageList, status, messages })
 );
 const chatSlice = createSlice({
   name: "chat",
@@ -35,6 +41,22 @@ const chatSlice = createSlice({
     },
     addImageFailure: (state, { payload: error }) => {
       state.imageList = [];
+      state.status.message = error;
+      state.status.loading = false;
+    },
+    getChats: (state) => {
+      state.messages = [];
+      state.status.message = "";
+      state.status.loading = true;
+    },
+    getChatsSuccess: (state, { payload: messages }) => {
+      // console.log("slice: messages", messages);
+      state.messages = messages;
+      state.status.message = "ok";
+      state.status.loading = false;
+    },
+    getChatsFailure: (state, { payload: error }) => {
+      state.messages = [];
       state.status.message = error;
       state.status.loading = false;
     },

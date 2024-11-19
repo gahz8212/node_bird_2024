@@ -2,7 +2,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { all, call } from "redux-saga/effects";
 import authSlice from "./slices/authSlice";
 import userSlice, { userActions } from "./slices/userSlice";
-import chatSlice from "./slices/chatSlice";
+import chatSlice, { chatActions } from "./slices/chatSlice";
 import { authSaga } from "./sagas/authSaga";
 import { userSaga } from "./sagas/userSaga";
 import { chatSaga } from "./sagas/chatSaga";
@@ -21,6 +21,7 @@ const getUser = () => {
     const user = localStorage.getItem("user");
     if (!user) return;
     store.dispatch(userActions.check());
+    store.dispatch(chatActions.getChats());
   } catch (e) {
     console.error("localstorage is not working");
   }

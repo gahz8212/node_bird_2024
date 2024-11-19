@@ -13,11 +13,12 @@ type Props = {}
 const HomeContainer: React.FC<Props> = () => {
     const dispatch = useDispatch();
     const { auth } = useSelector(userData)
-    const { imageList, status } = useSelector(chatData)
+    const { imageList, status, messages } = useSelector(chatData)
     const once = useRef(true)
     const scrollRef = useRef<HTMLDivElement>(null)
     const [message, setMessage] = useState('')
-    const [chats, setChats] = useState<{ message: string, user: string, images: { url: string }[] }[]>([])
+    const [chats, setChats] = useState<{ chat: string, name: string, image: string }[]>([])
+    const [users, setUsers] = useState<string[]>([])
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
         setMessage(value)
@@ -42,26 +43,51 @@ const HomeContainer: React.FC<Props> = () => {
     const send = async () => {
         return await axios.post('/home/chat', { message })
     }
+    const scrollToBottom = () => {
+        if (scrollRef.current) {
+            scrollRef.current.scrollTop = scrollRef.current?.scrollHeight;
+        }
+    }
     useEffect(() => {
         if (once.current === true) {
             once.current = false;
             return;
         } else {
-            socket.on('chat', (data: { message: string, user: string, images: { url: string }[] }) => {
-                console.log(data)
+            socket.on('chat', (data: { chat: string, name: string, image: string, userList: string[] }) => {
+                // console.log(data)
                 setChats(prev => [...prev, data])
+                console.log('userList', data.userList)
+
             })
+            socket.on('userList', (data: string[]) => {
+                // alert('login')
+
+                setUsers(data)
+
+            })
+            // socket.on('logout', (data: { user: string }) => {
+            //     // alert('logout')
+            //     console.log(data.user)
+            //     console.log(users)
+            //     // setUsers(newUsers)
+            // })
 
         }
         once.current = true
-        // return;
+
     }, [])
+
     useEffect(() => {
-        scrollRef.current?.scrollTo(0, 1000)
+        setChats(chats.concat(messages))
+        setTimeout(scrollToBottom, 1000)
+
+    }, [messages])
+    useEffect(() => {
+        scrollToBottom()
     }, [chats])
     return (
         <div>
-            <HomeComponent onInsertImage={onInsertImage} auth={auth} message={message} scrollRef={scrollRef} onChange={onChange} onSubmit={onSubmit} chats={chats} />
+            <HomeComponent users={users} onInsertImage={onInsertImage} auth={auth} message={message} scrollRef={scrollRef} onChange={onChange} onSubmit={onSubmit} messages={chats} />
         </div>
     );
 };

@@ -7,6 +7,8 @@ const AuthBarContainer = () => {
     const { auth, status } = useSelector(userData)
     const logout = () => {
         dispatch(userActions.logout())
+        // window.location.reload();
+
         try {
 
             localStorage.removeItem('user')

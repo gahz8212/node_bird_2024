@@ -7,8 +7,10 @@ import { imageInsert } from '../../lib/utils/createFormData';
 import io from 'socket.io-client'
 import axios from 'axios';
 
-// const socket = io('/chat')
-const socket = io('/room')
+const socket = io('/chat', {
+    path: "/my-custom-path/"
+})
+// const socket = io('/room')
 type Props = {}
 const HomeContainer: React.FC<Props> = () => {
     const dispatch = useDispatch();
@@ -41,7 +43,7 @@ const HomeContainer: React.FC<Props> = () => {
 
     }
     const send = async () => {
-        return await axios.post('/home/chat', { message })
+        return await axios.post('/home/room/1/chat', { message })
     }
     const scrollToBottom = () => {
         if (scrollRef.current) {
@@ -55,28 +57,23 @@ const HomeContainer: React.FC<Props> = () => {
         } else {
             socket.on('chat', (data: { chat: string, name: string, image: string, userList: string[] }) => {
                 // console.log(data)
+                // setUsers(data.userList)
                 setChats(prev => [...prev, data])
-                console.log('userList', data.userList)
-
             })
-            socket.on('userList', (data: string[]) => {
-                // alert('login')
-
-                setUsers(data)
-
-            })
-            // socket.on('logout', (data: { user: string }) => {
-            //     // alert('logout')
-            //     console.log(data.user)
-            //     console.log(users)
-            //     // setUsers(newUsers)
-            // })
-
         }
         once.current = true
+    }, [])
+    useEffect(() => {
+        socket.on('userList', (data) => {
+
+            console.log(data)
+            setUsers(data)
+
+
+        })
+
 
     }, [])
-
     useEffect(() => {
         setChats(chats.concat(messages))
         setTimeout(scrollToBottom, 1000)

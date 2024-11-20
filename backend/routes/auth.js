@@ -3,7 +3,7 @@ const router = express.Router();
 const passport = require("passport");
 const bcrypt = require("bcrypt");
 const { User } = require("../models");
-const users = [];
+let users = [];
 router.post("/join", async (req, res) => {
   const { email, name, rank, password } = req.body;
   try {
@@ -31,20 +31,20 @@ router.post("/login", (req, res) => {
         if (loginError) {
           throw new Error(loginError);
         } else {
-          req.app.get("io").of("/room").users = users;
-          if (!users.includes(req.user.name)) {
-            users.push(req.user.name);
-          }
-          // req.app.get("io").of("/room").users = users;
           req.app
             .get("io")
             .of("/room")
             .emit("chat", {
               chat: `${req.user.name}님이 로그인 됨`,
               name: "system",
-              userList: users,
             });
-          console.log("userList", req.app.get("io").of("/room").users);
+          if (!users.includes(req.user.name)) {
+            users.push(req.user.name);
+          }
+          // console.log(users);
+          // console.log(req.app.get("io").of("/room").users);
+          req.app.get("io").of("/room").users = users;
+          // console.log("userList", req.app.get("io").of("/room").users);
           return res.status(200).json("login_ok");
         }
       });
@@ -54,18 +54,22 @@ router.post("/login", (req, res) => {
   })(req, res);
 });
 router.post("/logout", (req, res) => {
-  const newUserList = users.filter((user) => user !== req.user.name);
-  req.app.get("io").of("/room").users = newUserList;
-  // console.log("userList", req.app.get("io").of("/room").users);
   req.app
     .get("io")
     .of("/room")
     .emit("chat", {
       chat: `${req.user.name}님이 로그아웃 됨`,
       name: "system",
-      userList: newUserList,
     });
-
+  const newUserList = users.filter((user) => user !== req.user.name);
+  users = newUserList;
+  // console.log(users);
+  req.app.get("io").of("/room").users = users;
+  // console.log("newUserList", newUserList);
+  // req.app
+  //   .get("io")
+  //   .of("/room")
+  //   .users.filter((user) => user !== req.user.name);
   req.logout((e) => {
     if (e) {
       return;

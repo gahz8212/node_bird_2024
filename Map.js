@@ -19,8 +19,16 @@
 // for (let i of set) {
 //   console.log(Array.from(i));
 // }
-const set=new Set([1,2,3,4])
-const map=new Map();
-map.set('one',set)
-const obj=Object.fromEntries(map.entries())
-console.log(Array.from(obj.one))
+// const set=new Set([1,2,3,4])
+// const map=new Map();
+// map.set('one',set)
+// const obj=Object.fromEntries(map.entries())
+// console.log(Array.from(obj.one))
+const map = new Map();
+map.set("하나", "1");
+map.set("둘", "2");
+map.set("셋", "3");
+const obj = Object.values(Object.fromEntries(map));
+const index = obj.findIndex((o) => o === "3");
+const keys=Array.from(new Set(map.keys()))[index]
+console.log(keys)

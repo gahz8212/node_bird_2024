@@ -41,10 +41,8 @@ router.post("/login", (req, res) => {
           if (!users.includes(req.user.name)) {
             users.push(req.user.name);
           }
-          // console.log(users);
-          // console.log(req.app.get("io").of("/room").users);
-          req.app.get("io").of("/room").users = users;
-          // console.log("userList", req.app.get("io").of("/room").users);
+          // req.app.get("io").of("/room").users = users;
+
           return res.status(200).json("login_ok");
         }
       });
@@ -61,15 +59,11 @@ router.post("/logout", (req, res) => {
       chat: `${req.user.name}님이 로그아웃 됨`,
       name: "system",
     });
-  const newUserList = users.filter((user) => user !== req.user.name);
-  users = newUserList;
-  // console.log(users);
-  req.app.get("io").of("/room").users = users;
-  // console.log("newUserList", newUserList);
-  // req.app
-  //   .get("io")
-  //   .of("/room")
-  //   .users.filter((user) => user !== req.user.name);
+  // const newUserList = users.filter((user) => user !== req.user.name);
+  // users = newUserList;
+
+  // req.app.get("io").of("/room").users = users;
+
   req.logout((e) => {
     if (e) {
       return;

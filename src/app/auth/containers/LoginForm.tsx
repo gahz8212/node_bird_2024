@@ -34,6 +34,7 @@ const LoginForm: React.FC<Props> = () => {
     }, [dispatch, status.message])
     useEffect(() => {
         if (auth) {
+            socket.emit('login', auth.name)
             navigate('/home')
             try {
                 dispatch(chatActions.getChats())
@@ -41,12 +42,7 @@ const LoginForm: React.FC<Props> = () => {
             } catch (e) { console.error('localstorage is not working') }
         }
     }, [auth, navigate, dispatch])
-    useEffect(() => {
-        socket.on('userList', data => {
-            console.log(data)
-        })
 
-    })
     return (
         <div>
             <AuthTemplate>{<AuthForm form={'login'} onChange={onChange} formData={login} onSubmit={onLogin} />}</AuthTemplate>

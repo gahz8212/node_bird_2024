@@ -7,6 +7,8 @@ import { authSaga } from "./sagas/authSaga";
 import { userSaga } from "./sagas/userSaga";
 import { chatSaga } from "./sagas/chatSaga";
 import createSagaMiddleware from "redux-saga";
+import io from "socket.io-client";
+const socket = io("/room");
 const reducers = combineReducers({
   auth: authSlice,
   user: userSlice,
@@ -22,6 +24,7 @@ const getUser = () => {
     if (!user) return;
     store.dispatch(userActions.check());
     store.dispatch(chatActions.getChats());
+    socket.emit("req_login",'req');
   } catch (e) {
     console.error("localstorage is not working");
   }

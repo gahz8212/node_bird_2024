@@ -7,10 +7,8 @@ import { imageInsert } from '../../lib/utils/createFormData';
 import io from 'socket.io-client'
 import axios from 'axios';
 
-const socket = io('/chat', {
-    path: "/my-custom-path/"
-})
-// const socket = io('/room')
+// const socket = io('/chat')
+const socket = io('/room')
 type Props = {}
 const HomeContainer: React.FC<Props> = () => {
     const dispatch = useDispatch();
@@ -43,7 +41,8 @@ const HomeContainer: React.FC<Props> = () => {
 
     }
     const send = async () => {
-        return await axios.post('/home/room/1/chat', { message })
+
+        return await axios.post('/home/chat', { message })
     }
     const scrollToBottom = () => {
         if (scrollRef.current) {
@@ -51,31 +50,52 @@ const HomeContainer: React.FC<Props> = () => {
         }
     }
     useEffect(() => {
-        if (once.current === true) {
+        if (!io) return
+        if (once.current) {
             once.current = false;
-            return;
-        } else {
-            socket.on('chat', (data: { chat: string, name: string, image: string, userList: string[] }) => {
-                // console.log(data)
-                // setUsers(data.userList)
+            return
+        }
+        socket.on('chat', (data: { chat: string, name: string, image: string, userList: string[] }) => {
+
+            setChats(prev => [...prev, data])
+        })
+        once.current = true;
+        return () => {
+            socket.off('chat', (data: { chat: string, name: string, image: string, userList: string[] }) => {
                 setChats(prev => [...prev, data])
             })
         }
-        once.current = true
     }, [])
     useEffect(() => {
-        socket.on('userList', (data) => {
+        if (!io) return
 
-            console.log(data)
-            setUsers(data)
-
-
+        socket.on('login_response', (data) => {
+            console.log('data', data)
+            // setUsers(data)
+            // setUsers(Object.values(data.userList))
         })
-
-
+        return () => {
+            socket.off('login_response', (data) => {
+                console.log(data)
+                // setUsers(data)
+            })
+        }
     }, [])
     useEffect(() => {
-        setChats(chats.concat(messages))
+        if (!io) return;
+        socket.on('logout_response', (data) => {
+            console.log(data)
+            // setUsers(data)
+        })
+        return () => {
+            socket.off('logout_response', (data) => {
+                console.log(data)
+                // setUsers(data)
+            })
+        }
+    }, [])
+    useEffect(() => {
+        setChats(prev => prev.concat(messages))
         setTimeout(scrollToBottom, 1000)
 
     }, [messages])

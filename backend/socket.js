@@ -1,5 +1,5 @@
 const { Server } = require("socket.io");
-// const users = [];
+const userList = new Map();
 function onlyForHandshake(middleware) {
   return (req, res, next) => {
     const isHandshake = req._query.sid === undefined;
@@ -11,9 +11,7 @@ function onlyForHandshake(middleware) {
   };
 }
 module.exports = (app, server, sessionMiddleware, passport) => {
-  const io = new Server(server, {
-    path: "/my-custom-path/",
-  });
+  const io = new Server(server);
   app.set("io", io);
 
   io.engine.use(onlyForHandshake(sessionMiddleware));
@@ -30,53 +28,87 @@ module.exports = (app, server, sessionMiddleware, passport) => {
   );
 
   const room = io.of("/room");
-  const chat = io.of("/chat");
+  // const chat = io.of("/chat");
   room.on("connection", (socket) => {
-    // room.users = [];
     const req = socket.request;
     console.log(`${req.user.name}이 room 네임스페이스에 연결됨.`);
-    console.log(room.users);
-    socket.emit("userList", room.users);
-    // const set = new Set(room.adapter.rooms.values());
-    // for (let i of set) {
-    //   console.log(Array.from(i)[0]);
-    // }
-    // console.log(room.users);
-    // room.users = users;
-    // if (!room.users.includes(req.user.name)) {
-    //   room.users.push(req.user.name);
-    // }
-    // socket.emit("userList", room.users);
+    socket.on("login", (data) => {
+      const clientId = socket.id;
+      userList.set(clientId, data);
+      console.log(Object.fromEntries([...userList]));
+
+      socket.broadcast.emit(
+        "login_response",
+        Object.fromEntries([...userList])
+      );
+    });
+    socket.on("logout", (name) => {
+      const obj = Object.fromEntries(userList);
+      const keys = Object.keys(obj);
+      const values = Object.values(obj);
+      const index = values.findIndex((value) => value === name);
+      console.log("keys[index]", keys[index]);
+      const clientId = keys[index];
+
+      userList.delete(clientId);
+      console.log(Object.fromEntries([...userList]));
+      socket.broadcast.emit(
+        "logout_response",
+        Object.fromEntries([...userList])
+      );
+    });
+    socket.on("req_login", () => {
+      socket.broadcast.emit(
+        "login_response",
+        Object.values(Object.fromEntries(userList))
+      );
+    });
     socket.on("disconnect", () => {
-      console.log("room 네임스페이스에서 해제 됨.");
+      console.log(`${req.user.name} 네임스페이스에서 해제 됨.`);
+      socket.on("logout", () => {
+        const clientId = socket.id;
+        //   // const obj = Object.fromEntries(userList);
+        //   // const keys = Object.keys(obj);
+        //   // const values = Object.values(obj);
+        //   // const index = values.findIndex((value) => value === name);
+        //   // console.log("keys[index]", keys[index]);
+        //   // const clientId = keys[index];
+
+        userList.delete(clientId);
+        //   console.log(Object.fromEntries(userList));
+        socket.broadcast.emit(
+          "logout_response",
+          Object.fromEntries([...userList])
+        );
+      });
       // socket.leave();
       // console.log(room.users);
       // socket.emit("userList", room.users);
     });
   });
-  chat.on("connection", (socket) => {
-    console.log("chat 네임스페이스에 연결됨.");
-    const req = socket.request;
-    console.log(req.user.id);
-    const {
-      headers: { referer },
-    } = req;
-    const roomId = referer
-      .split("/")
-      [referer.split("/").length - 1].replace(/\?.+/, "");
-    socket.join(roomId);
+  // chat.on("connection", (socket) => {
+  //   console.log("chat 네임스페이스에 연결됨.");
+  //   const req = socket.request;
+  //   console.log(req.user.id);
+  //   const {
+  //     headers: { referer },
+  //   } = req;
+  //   const roomId = referer
+  //     .split("/")
+  //     [referer.split("/").length - 1].replace(/\?.+/, "");
+  //   socket.join(roomId);
 
-    socket.broadcast.emit("chat", {
-      chat: `${req.user.name}님이 입장 했습니다.`,
-      name: "system",
-    });
-    socket.on("disconnect", () => {
-      console.log("chat 네임스페이스에서 해제 됨.");
-      socket.leave(roomId);
-      socket.broadcast.emit("chat", {
-        chat: `${req.user.name}님이 퇴장 했습니다.`,
-        name: "system",
-      });
-    });
-  });
+  //   socket.broadcast.emit("chat", {
+  //     chat: `${req.user.name}님이 입장 했습니다.`,
+  //     name: "system",
+  //   });
+  //   socket.on("disconnect", () => {
+  //     console.log("chat 네임스페이스에서 해제 됨.");
+  //     socket.leave(roomId);
+  //     socket.broadcast.emit("chat", {
+  //       chat: `${req.user.name}님이 퇴장 했습니다.`,
+  //       name: "system",
+  //     });
+  //   });
+  // });
 };

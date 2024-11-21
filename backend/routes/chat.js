@@ -18,7 +18,7 @@ const upload = multer({
     },
   }),
 });
-router.post("/room/:id/images", upload.array("images"), async (req, res) => {
+router.post("/images", upload.array("images"), async (req, res) => {
   try {
     const files = req.files.map((file) => ({ url: `/img/${file.filename}` }));
 
@@ -32,11 +32,10 @@ router.post("/room/:id/images", upload.array("images"), async (req, res) => {
       url: `${image}`,
     }));
     console.log("images", images);
-    const { id } = req.params;
+    // const { id } = req.params;
     req.app
       .get("io")
-      .of("/chat")
-      .to(id)
+      .of("/room")
       .emit("chat", { name: req.user.name, image: images });
 
     return res.status(200).json("image_ok");
@@ -44,17 +43,15 @@ router.post("/room/:id/images", upload.array("images"), async (req, res) => {
     return res.status(400).json(e.message);
   }
 });
-router.post("/room/:id/chat", async (req, res) => {
-  // router.post("/chat", (req, res) => {
-  const { id } = req.params;
+router.post("/chat", async (req, res) => {
+  // const { id } = req.params;
   const { message } = req.body;
   const user = await User.findOne({ where: { id: req.user.id } });
   const chats = await Chat.create({ chat: message, name: req.user.name });
   user.addChats(chats);
   req.app
     .get("io")
-    .of("/chat")
-    .to(id)
+    .of("/room")
     .emit("chat", { chat: message, name: req.user.name });
   return res.send("ok");
 });

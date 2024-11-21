@@ -61,7 +61,7 @@ const HomeComponent: React.FC<Props> = ({ users, onInsertImage, auth, scrollRef,
             </div>
             <div className="userList">
                 <ul>
-                    {users && users.map(user => <li key={user}>{user}</li>)}
+                    {users && users.map(user => auth?.name !== user && <li key={user}>{user}</li>)}
                 </ul>
             </div>
         </div>

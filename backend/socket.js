@@ -60,7 +60,7 @@ module.exports = (app, server, sessionMiddleware, passport) => {
     socket.on("req_login", () => {
       socket.broadcast.emit(
         "login_response",
-        Object.values(Object.fromEntries(userList))
+        Object.values(Object.fromEntries([...userList]))
       );
     });
     socket.on("disconnect", () => {

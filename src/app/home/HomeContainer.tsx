@@ -72,11 +72,15 @@ const HomeContainer: React.FC<Props> = () => {
         socket.on('login_response', (data) => {
             console.log('data', data)
             // setUsers(data)
-            // setUsers(Object.values(data.userList))
+            const users: string[] = Object.values(data)
+            setUsers(users)
         })
         return () => {
             socket.off('login_response', (data) => {
                 console.log(data)
+                const users: string[] = Object.values(data)
+                setUsers(users)
+                // setUsers(Object.values(data.userList))
                 // setUsers(data)
             })
         }
@@ -84,12 +88,18 @@ const HomeContainer: React.FC<Props> = () => {
     useEffect(() => {
         if (!io) return;
         socket.on('logout_response', (data) => {
-            console.log(data)
+            const users: string[] = Object.values(data)
+            setUsers(users)
+            // console.log(data)
+            // setUsers(Object.values(data.userList))
             // setUsers(data)
         })
         return () => {
             socket.off('logout_response', (data) => {
-                console.log(data)
+                const users: string[] = Object.values(data)
+                setUsers(users)
+                // console.log(data)
+                // setUsers(Object.values(data.userList))
                 // setUsers(data)
             })
         }

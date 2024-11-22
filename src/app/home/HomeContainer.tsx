@@ -90,17 +90,13 @@ const HomeContainer: React.FC<Props> = () => {
         socket.on('logout_response', (data) => {
             const users: string[] = Object.values(data)
             setUsers(users)
-            // console.log(data)
-            // setUsers(Object.values(data.userList))
-            // setUsers(data)
+
         })
         return () => {
             socket.off('logout_response', (data) => {
                 const users: string[] = Object.values(data)
                 setUsers(users)
-                // console.log(data)
-                // setUsers(Object.values(data.userList))
-                // setUsers(data)
+
             })
         }
     }, [])

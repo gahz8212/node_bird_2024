@@ -35,12 +35,9 @@ module.exports = (app, server, sessionMiddleware, passport) => {
     socket.on("login", (data) => {
       const clientId = socket.id;
       userList.set(clientId, data);
-      console.log(Object.fromEntries([...userList]));
-
-      socket.broadcast.emit(
-        "login_response",
-        Object.fromEntries([...userList])
-      );
+      console.log(Object.fromEntries(userList));
+      console.log("client:", app.get("client"));
+      socket.broadcast.emit("login_response", Object.fromEntries(userList));
     });
     socket.on("logout", (name) => {
       const obj = Object.fromEntries(userList);
@@ -52,15 +49,12 @@ module.exports = (app, server, sessionMiddleware, passport) => {
 
       userList.delete(clientId);
       console.log(Object.fromEntries([...userList]));
-      socket.broadcast.emit(
-        "logout_response",
-        Object.fromEntries([...userList])
-      );
+      socket.broadcast.emit("logout_response", Object.fromEntries(userList));
     });
     socket.on("req_login", () => {
       socket.broadcast.emit(
         "login_response",
-        Object.values(Object.fromEntries([...userList]))
+        Object.values(Object.fromEntries(userList))
       );
     });
     socket.on("disconnect", () => {

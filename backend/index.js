@@ -13,6 +13,7 @@ const itemRoute = require("./routes/item");
 const chatRoute = require("./routes/chat");
 const { createServer } = require("http");
 const webServer = require("./socket");
+const sse = require("./sse");
 
 const app = express();
 app.use(cors());
@@ -47,3 +48,4 @@ server.listen(app.get("port"), () => {
   console.log(`${app.get("port")}번 포트에서 서버 대기 중`);
 });
 webServer(app, server, sessionMiddleware, passport);
+sse(app, server);

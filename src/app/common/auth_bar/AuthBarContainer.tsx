@@ -3,6 +3,7 @@ import AuthBarComponent from './AuthBarComponent';
 import { useDispatch, useSelector } from 'react-redux';
 import { userData, userActions } from '../../../store/slices/userSlice';
 import io from 'socket.io-client'
+
 const socket = io('/room')
 const AuthBarContainer = () => {
     const dispatch = useDispatch();

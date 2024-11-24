@@ -4,7 +4,7 @@ module.exports = (app, server) => {
   sse.on("connection", (client) => {
     // app.set("client", client);
     setInterval(() => {
-      client.send(new Date().toString());
+      client.send(Date.now().toString());
     }, 1000);
   });
 };

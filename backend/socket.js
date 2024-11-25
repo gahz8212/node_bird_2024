@@ -44,11 +44,11 @@ module.exports = (app, server, sessionMiddleware, passport) => {
       const keys = Object.keys(obj);
       const values = Object.values(obj);
       const index = values.findIndex((value) => value === name);
-      console.log("keys[index]", keys[index]);
+      // console.log("keys[index]", keys[index]);
       const clientId = keys[index];
 
       userList.delete(clientId);
-      console.log(Object.fromEntries([...userList]));
+      // console.log(Object.fromEntries([...userList]));
       socket.broadcast.emit("logout_response", Object.fromEntries(userList));
     });
     socket.on("req_login", () => {

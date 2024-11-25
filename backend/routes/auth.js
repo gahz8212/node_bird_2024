@@ -3,7 +3,8 @@ const router = express.Router();
 const passport = require("passport");
 const bcrypt = require("bcrypt");
 const { User } = require("../models");
-let users = [];
+const jwt = require("jsonwebtoken");
+// let users = [];
 router.post("/join", async (req, res) => {
   const { email, name, rank, password } = req.body;
   try {
@@ -38,9 +39,10 @@ router.post("/login", (req, res) => {
               chat: `${req.user.name}님이 로그인 됨`,
               name: "system",
             });
-          if (!users.includes(req.user.name)) {
-            users.push(req.user.name);
-          }
+
+          // if (!users.includes(req.user.name)) {
+          //   users.push(req.user.name);
+          // }
           // req.app.get("io").of("/room").users = users;
 
           return res.status(200).json("login_ok");
@@ -76,6 +78,10 @@ router.post("/logout", (req, res) => {
 router.get("/check", (req, res) => {
   try {
     const { id, name, rank } = req.user;
+    const token = jwt.sign({ id, name }, process.env.JWT_SECRET, {
+      expiresIn: "1m",
+    });
+    console.log(token);
     return res.status(200).json({ id, name, rank });
   } catch (e) {
     return res.status(400).json(e.message);

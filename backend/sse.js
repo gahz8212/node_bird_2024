@@ -5,6 +5,6 @@ module.exports = (app, server) => {
     // app.set("client", client);
     setInterval(() => {
       client.send(Date.now().toString());
-    }, 1000);
+    }, 100);
   });
 };

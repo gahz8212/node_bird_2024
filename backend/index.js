@@ -31,7 +31,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/", express.static(path.join(__dirname, "public")));
 app.use("/img", express.static(path.join(__dirname, "uploads")));
 app.use(cookieParser(process.env.COOKIE_SECRET));
-
+// const expires = new Date();
+// expires.setMinutes(expires.getMinutes() + 1);
 const sessionMiddleware = session({
   saveUninitialized: false,
   resave: false,

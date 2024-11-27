@@ -1,4 +1,10 @@
+const passport = require("passport");
 const jwt = require("jsonwebtoken");
+exports.loggedIn = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    next();
+  }
+};
 exports.verifyToken = (req, res, next) => {
   try {
     req.decoded = jwt.verify(req.headers.authorization, process.env.JWT_SCRECT);

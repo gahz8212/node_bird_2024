@@ -23,7 +23,7 @@ const AuthBarContainer = () => {
         const es = new EventSource('/sse')
         const end = new Date();
         let restTime = '00:00:00'
-        end.setSeconds(end.getSeconds() + 40)
+        end.setSeconds(end.getSeconds() + 60)
 
         es.onmessage = function (e: any) {
             const server = new Date(parseInt(e.data, 10))

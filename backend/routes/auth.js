@@ -78,10 +78,16 @@ router.post("/logout", (req, res) => {
 router.get("/check", (req, res) => {
   try {
     const { id, name, rank } = req.user;
+    // console.log(req.cookies);
     const token = jwt.sign({ id, name }, process.env.JWT_SECRET, {
       expiresIn: "1m",
     });
-    console.log(token);
+    // console.log(req.headers.cookie);
+    // res.cookie("name", "별볼일없는건데", {
+    //   httpOnly: true,
+    //   maxAge: 1000 * 60,
+    // });
+    res.cookie("jwt", token, { httpOnly: true, maxAge: 1000 * 60 });
     return res.status(200).json({ id, name, rank });
   } catch (e) {
     return res.status(400).json(e.message);

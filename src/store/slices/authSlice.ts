@@ -30,13 +30,14 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    initForm: (state, { payload:  form  }) => {
+    initForm: (state, { payload: form }) => {
       state[form] = initialState[form];
-      state.status=initialState.status
+      state.status = initialState.status;
     },
     changeField: (state, { payload: { form, key, value } }) => {
       state[form][key] = value;
     },
+
     login: (
       state,
       action: PayloadAction<{ email: string; password: string }>

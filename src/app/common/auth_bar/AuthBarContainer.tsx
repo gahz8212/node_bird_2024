@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AuthBarComponent from './AuthBarComponent';
 import { useDispatch, useSelector } from 'react-redux';
 import { userData, userActions } from '../../../store/slices/userSlice';
+
 import io from 'socket.io-client'
 
 const socket = io('/room')
@@ -19,16 +20,21 @@ const AuthBarContainer = () => {
             localStorage.removeItem('user')
         } catch (e) { console.error('localstorage is not working') }
     }
+    const extends_auth = () => {
+        dispatch(userActions.extends_auth())
+    }
     useEffect(() => {
         const es = new EventSource('/sse')
-        const end = new Date();
+        const end = new Date(status.expires)
+
         let restTime = '00:00:00'
-        end.setSeconds(end.getSeconds() + 60)
+        // end.setMinutes(end.getMinutes() + 5)
+
+
 
         es.onmessage = function (e: any) {
             const server = new Date(parseInt(e.data, 10))
             const t = (end.getTime() - server.getTime());
-
             if (server >= end) {
                 setTime('00:00:00');
                 es.close();
@@ -44,10 +50,10 @@ const AuthBarContainer = () => {
         return () => {
             es.close()
         }
-    }, [])
+    }, [status.expires])
     return (
         <div>
-            <AuthBarComponent auth={auth} logout={logout} time={time} />
+            <AuthBarComponent auth={auth} logout={logout} time={time} extends_auth={extends_auth} />
         </div>
     );
 };

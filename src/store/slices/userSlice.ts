@@ -2,11 +2,16 @@ import { createSlice, createSelector } from "@reduxjs/toolkit";
 import { RootState } from "..";
 type State = {
   auth: { id: number; name: string; rank: number } | null;
-  status: { message: string; error: string; loading: boolean };
+  status: { message: string; error: string; loading: boolean; expires: string };
 };
 const initialState: State = {
   auth: null,
-  status: { message: "", error: "", loading: false },
+  status: {
+    message: "",
+    error: "",
+    loading: false,
+    expires: new Date().toUTCString(),
+  },
 };
 const userSelector = (state: RootState) => {
   return state.user.auth;
@@ -43,6 +48,13 @@ const userSlice = createSlice({
     },
     logout: (state) => {
       state.auth = null;
+    },
+    extends_auth: (state) => {},
+    extends_authSuccess: (state, { payload: expires }) => {
+      state.status.expires = expires;
+    },
+    extends_authFailure: (state, { payload: error }) => {
+      state.status.error = error;
     },
   },
 });

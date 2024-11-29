@@ -17,13 +17,15 @@ function* joinSaga(action: {
 }) {
   try {
     const response: { data: string } = yield call(authAPI.join, action.payload);
-    console.log(response.data)
+    console.log(response.data);
     yield put(authActions.joinSuccess(response.data));
   } catch (e: any) {
     yield put(authActions.joinFailure(e.response.data));
   }
 }
+
 export function* authSaga() {
   yield takeLatest(authActions.login, loginSaga);
   yield takeLatest(authActions.join, joinSaga);
+ 
 }

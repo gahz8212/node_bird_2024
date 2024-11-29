@@ -4,8 +4,9 @@ type Props = {
     auth: { name: string } | null;
     logout: () => void;
     time: string
+    extends_auth: () => void;
 }
-const AuthBarComponent: React.FC<Props> = ({ auth, logout, time }) => {
+const AuthBarComponent: React.FC<Props> = ({ auth, logout, time, extends_auth }) => {
 
 
     return (
@@ -21,7 +22,7 @@ const AuthBarComponent: React.FC<Props> = ({ auth, logout, time }) => {
                                 <div>
                                     <span>남은시간</span><br /><span> {time}</span>
                                 </div>
-                                <button onClick={() => { alert('시간연장') }}>연장하기</button>
+                                <button onClick={extends_auth}>연장하기</button>
                             </div> : <Link to='/'>LOGIN</Link>}
                         </div>
                     </div>

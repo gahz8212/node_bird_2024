@@ -37,7 +37,7 @@ const sessionMiddleware = session({
   saveUninitialized: false,
   resave: false,
   secret: process.env.COOKIE_SECRET,
-  cookie: { httpOnly: true, secure: false },
+  cookie: { httpOnly: true, secure: false, path: "/" },
 });
 app.use(sessionMiddleware);
 app.use(passport.initialize());

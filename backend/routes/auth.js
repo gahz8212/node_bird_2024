@@ -4,6 +4,8 @@ const passport = require("passport");
 const bcrypt = require("bcrypt");
 const { User } = require("../models");
 const jwt = require("jsonwebtoken");
+const exp = require("constants");
+const { Console } = require("console");
 // let users = [];
 router.post("/join", async (req, res) => {
   const { email, name, rank, password } = req.body;
@@ -39,12 +41,9 @@ router.post("/login", (req, res) => {
               chat: `${req.user.name}님이 로그인 됨`,
               name: "system",
             });
-
-          // if (!users.includes(req.user.name)) {
-          //   users.push(req.user.name);
-          // }
-          // req.app.get("io").of("/room").users = users;
-
+          let expires = new Date(Date.now() + 6000);
+          req.session.cookie.expires = expires;
+          console.log(req.session.cookie);
           return res.status(200).json("login_ok");
         }
       });
@@ -61,10 +60,6 @@ router.post("/logout", (req, res) => {
       chat: `${req.user.name}님이 로그아웃 됨`,
       name: "system",
     });
-  // const newUserList = users.filter((user) => user !== req.user.name);
-  // users = newUserList;
-
-  // req.app.get("io").of("/room").users = users;
 
   req.logout((e) => {
     if (e) {
@@ -78,19 +73,40 @@ router.post("/logout", (req, res) => {
 router.get("/check", (req, res) => {
   try {
     const { id, name, rank } = req.user;
-    // console.log(req.cookies);
-    const token = jwt.sign({ id, name }, process.env.JWT_SECRET, {
-      expiresIn: "1m",
-    });
+    // const token = jwt.sign({ id, name }, process.env.JWT_SECRET, {
+    //   expiresIn: "1m",
+    // });
+    // req.session.token = token;
+    // console.log(req.sessionID, req.session);
     // console.log(req.headers.cookie);
     // res.cookie("name", "별볼일없는건데", {
     //   httpOnly: true,
     //   maxAge: 1000 * 60,
     // });
-    res.cookie("jwt", token, { httpOnly: true, maxAge: 1000 * 60 });
+    // res.cookie("jwt", token, { httpOnly: true, maxAge: 1000 * 60 });
     return res.status(200).json({ id, name, rank });
   } catch (e) {
     return res.status(400).json(e.message);
   }
+});
+router.post("/extends", (req, res) => {
+  console.log("extends");
+
+  // req.session.touch();
+
+  const expires = new Date();
+
+  // console.log("before", expires);
+  expires.setMinutes(expires.getMinutes() + 10);
+
+  // res.setHeader(
+  //   "Set-Cookie",
+  //   `connect.sid=s%3A${
+  //     req.sessionID
+  //   }; Expires=${expires.toUTCString()}; HttpOnly; path=/`
+  // );
+  console.log("after ", expires);
+
+  res.status(200).json(expires.toUTCString());
 });
 module.exports = router;

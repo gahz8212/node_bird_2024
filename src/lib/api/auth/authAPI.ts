@@ -18,3 +18,6 @@ export const logout = () => {
 export const check = () => {
   return client.get("/check");
 };
+export const extends_auth=()=>{
+  return client.post('/extends')
+}

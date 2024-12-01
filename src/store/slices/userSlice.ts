@@ -34,10 +34,11 @@ const userSlice = createSlice({
       state.status.error = "";
       state.status.loading = true;
     },
-    checkSuccess: (state, { payload: user }) => {
-      state.auth = user;
+    checkSuccess: (state, { payload: userInfo }) => {
+      state.auth = userInfo.auth;
       state.status.message = "check_ok";
       state.status.error = "";
+      state.status.expires = userInfo.expires;
       state.status.loading = false;
     },
     checkFailure: (state, { payload: error }) => {

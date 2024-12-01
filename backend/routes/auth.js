@@ -3,9 +3,7 @@ const router = express.Router();
 const passport = require("passport");
 const bcrypt = require("bcrypt");
 const { User } = require("../models");
-const jwt = require("jsonwebtoken");
-const exp = require("constants");
-const { Console } = require("console");
+
 // let users = [];
 router.post("/join", async (req, res) => {
   const { email, name, rank, password } = req.body;
@@ -41,9 +39,16 @@ router.post("/login", (req, res) => {
               chat: `${req.user.name}님이 로그인 됨`,
               name: "system",
             });
-          let expires = new Date(Date.now() + 6000);
-          req.session.cookie.expires = expires;
-          console.log(req.session.cookie);
+          // let expires = new Date(Date.now() + 6000);
+          // req.session.cookie.expires = expires;
+          // res.setHeader(
+          //   "Set-Cookie",
+          //   `connect.sid=s%3A${
+          //     req.sessionID
+          //   }; Expires=${expires.toUTCString()}; HttpOnly; path=/`
+          // );
+
+          // console.log(req.session);
           return res.status(200).json("login_ok");
         }
       });
@@ -66,25 +71,25 @@ router.post("/logout", (req, res) => {
       return;
     }
 
-    req.session.destroy();
-    return res.send("logout_ok");
+    req.session.destroy(() => {
+      res.clearCookie("connect.sid", {
+        httpOnly: true,
+        secure: false,
+        path: "/",
+      });
+      res.send("logout_ok");
+    });
   });
 });
 router.get("/check", (req, res) => {
   try {
     const { id, name, rank } = req.user;
-    // const token = jwt.sign({ id, name }, process.env.JWT_SECRET, {
-    //   expiresIn: "1m",
-    // });
-    // req.session.token = token;
-    // console.log(req.sessionID, req.session);
-    // console.log(req.headers.cookie);
-    // res.cookie("name", "별볼일없는건데", {
-    //   httpOnly: true,
-    //   maxAge: 1000 * 60,
-    // });
-    // res.cookie("jwt", token, { httpOnly: true, maxAge: 1000 * 60 });
-    return res.status(200).json({ id, name, rank });
+
+    let expires = new Date(Date.now() + 6000);
+    req.session.cookie.expires = expires;
+    return res
+      .status(200)
+      .json({ auth: { id, name, rank }, expires: expires.toUTCString() });
   } catch (e) {
     return res.status(400).json(e.message);
   }
@@ -92,20 +97,20 @@ router.get("/check", (req, res) => {
 router.post("/extends", (req, res) => {
   console.log("extends");
 
-  // req.session.touch();
+  req.session.touch();
 
-  const expires = new Date();
-
-  // console.log("before", expires);
-  expires.setMinutes(expires.getMinutes() + 10);
-
+  let expires = new Date(Date.now() + 60000);
+  req.session.cookie.expires = expires;
+  console.log(req.sessionID);
   // res.setHeader(
   //   "Set-Cookie",
   //   `connect.sid=s%3A${
   //     req.sessionID
   //   }; Expires=${expires.toUTCString()}; HttpOnly; path=/`
   // );
-  console.log("after ", expires);
+
+  // console.log("after ", expires);
+  console.log("after ", req.session.cookie);
 
   res.status(200).json(expires.toUTCString());
 });

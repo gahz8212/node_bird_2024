@@ -27,5 +27,4 @@ function* joinSaga(action: {
 export function* authSaga() {
   yield takeLatest(authActions.login, loginSaga);
   yield takeLatest(authActions.join, joinSaga);
- 
 }

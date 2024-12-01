@@ -3,8 +3,12 @@ import * as authAPI from "../../lib/api/auth/authAPI";
 import { userActions } from "../slices/userSlice";
 function* checkSaga() {
   try {
-    const response: { data: { id: number; name: string; rank: number } } =
-      yield call(authAPI.check);
+    const response: {
+      data: {
+        auth: { id: number; name: string; rank: number };
+        expires: string;
+      };
+    } = yield call(authAPI.check);
     console.log(response.data);
     yield put(userActions.checkSuccess(response.data));
   } catch (e: any) {

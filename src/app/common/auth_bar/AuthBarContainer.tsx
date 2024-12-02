@@ -14,6 +14,7 @@ const AuthBarContainer = () => {
     const logout = () => {
         if (auth) {
             socket.emit('logout', auth.name)//clientId를 넣어줘야 한다
+            dispatch(userActions.expires_init())
             dispatch(userActions.logout())
         }
         // window.location.reload();

@@ -50,6 +50,9 @@ const userSlice = createSlice({
     logout: (state) => {
       state.auth = null;
     },
+    expires_init: (state) => {
+      state.status.expires = Date.now();
+    },
     extends_auth: (state) => {},
     extends_authSuccess: (state, { payload: expires }) => {
       state.status.expires = expires;

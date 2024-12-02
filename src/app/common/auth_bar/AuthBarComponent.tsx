@@ -28,9 +28,9 @@ const AuthBarComponent: React.FC<Props> = ({ auth, logout, time, extends_auth, r
                         </div>
                     </div>
                 </div>
-                {
+                {(remainingTime <= 20000 && remainingTime > 0) &&
                     <div
-                        className={`expAlarm ${(remainingTime <= 20000 && remainingTime > 0) && visible ? 'visible' : 'hidden'}`}
+                        // className={`expAlarm ${(remainingTime <= 20000 && remainingTime > 0) && visible ? 'visible' : 'hidden'}`}
                         style={{ transition: '1s', background: 'gray', position: 'fixed', top: '50%', left: '50%', width: "200px", height: '200px' }}>{remainingTime}
                         <button onClick={() => {
                             extends_auth();

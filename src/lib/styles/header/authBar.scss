@@ -25,6 +25,14 @@
       }
     }
   }
+  .expAlarm {
+    &.visible {
+      display: block;
+    }
+    &.hidden {
+      display: none;
+    }
+  }
 }
 .space {
   height: 80px;

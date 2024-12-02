@@ -2,7 +2,7 @@ import { createSlice, createSelector } from "@reduxjs/toolkit";
 import { RootState } from "..";
 type State = {
   auth: { id: number; name: string; rank: number } | null;
-  status: { message: string; error: string; loading: boolean; expires: string };
+  status: { message: string; error: string; loading: boolean; expires: number };
 };
 const initialState: State = {
   auth: null,
@@ -10,7 +10,7 @@ const initialState: State = {
     message: "",
     error: "",
     loading: false,
-    expires: new Date().toUTCString(),
+    expires: Date.now(),
   },
 };
 const userSelector = (state: RootState) => {

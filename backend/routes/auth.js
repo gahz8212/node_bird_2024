@@ -39,16 +39,7 @@ router.post("/login", (req, res) => {
               chat: `${req.user.name}님이 로그인 됨`,
               name: "system",
             });
-          // let expires = new Date(Date.now() + 6000);
-          // req.session.cookie.expires = expires;
-          // res.setHeader(
-          //   "Set-Cookie",
-          //   `connect.sid=s%3A${
-          //     req.sessionID
-          //   }; Expires=${expires.toUTCString()}; HttpOnly; path=/`
-          // );
 
-          // console.log(req.session);
           return res.status(200).json("login_ok");
         }
       });
@@ -85,11 +76,11 @@ router.get("/check", (req, res) => {
   try {
     const { id, name, rank } = req.user;
 
-    let expires = new Date(Date.now() + 6000);
+    let expires = Date.now() + 60000;
     req.session.cookie.expires = expires;
     return res
       .status(200)
-      .json({ auth: { id, name, rank }, expires: expires.toUTCString() });
+      .json({ auth: { id, name, rank }, expires: expires });
   } catch (e) {
     return res.status(400).json(e.message);
   }

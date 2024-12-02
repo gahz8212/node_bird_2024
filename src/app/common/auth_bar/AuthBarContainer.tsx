@@ -10,6 +10,7 @@ const AuthBarContainer = () => {
     const dispatch = useDispatch();
     const [time, setTime] = useState('')
     const { auth, status } = useSelector(userData)
+    const [remainingTime, setRemainingTime] = useState<number>(0)
     const logout = () => {
         if (auth) {
             socket.emit('logout', auth.name)//clientId를 넣어줘야 한다
@@ -28,7 +29,7 @@ const AuthBarContainer = () => {
 
             const es = new EventSource('/sse')
             const end = new Date(status.expires)
-            console.log('expires', end)
+            console.log(typeof end)
             let restTime = '00:00:00'
             // end.setMinutes(end.getMinutes() + 1)
 
@@ -36,15 +37,16 @@ const AuthBarContainer = () => {
 
             es.onmessage = function (e: any) {
                 const server = new Date(parseInt(e.data, 10))
-                const t = (end.getTime() - server.getTime());
+                const remainingTime = (end.getTime() - server.getTime());
+                setRemainingTime(remainingTime)
                 if (server >= end) {
                     setTime('00:00:00');
                     es.close();
                     logout()
                 } else {
-                    const seconds = ('0' + Math.floor((t / 1000) % 60)).slice(-2)
-                    const minutes = ('0' + Math.floor((t / 1000 / 60) % 60)).slice(-2)
-                    const hours = ('0' + Math.floor((t / 1000 / 60 / 60) % 60)).slice(-2)
+                    const seconds = ('0' + Math.floor((remainingTime / 1000) % 60)).slice(-2)
+                    const minutes = ('0' + Math.floor((remainingTime / 1000 / 60) % 60)).slice(-2)
+                    const hours = ('0' + Math.floor((remainingTime / 1000 / 60 / 60) % 60)).slice(-2)
                     restTime = `${hours}:${minutes}:${seconds}`
                     setTime(restTime)
                 }
@@ -56,7 +58,7 @@ const AuthBarContainer = () => {
     }, [status.expires])
     return (
         <div>
-            <AuthBarComponent auth={auth} logout={logout} time={time} extends_auth={extends_auth} />
+            <AuthBarComponent auth={auth} logout={logout} time={time} extends_auth={extends_auth} remainingTime={remainingTime} />
         </div>
     );
 };

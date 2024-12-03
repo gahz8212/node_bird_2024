@@ -68,30 +68,37 @@ const HomeContainer: React.FC<Props> = () => {
     }, [])
     useEffect(() => {
         if (!io) return
-
+        if (once.current) {
+            once.current = false;
+            return
+        }
         socket.on('login_response', (data) => {
-            console.log('data', data)
+            console.log('login_response_data', typeof data, data)
             // setUsers(data)
-            const users: string[] = Object.values(data)
+            const users: string[] = data
             setUsers(users)
         })
+        once.current = true;
         return () => {
             socket.off('login_response', (data) => {
                 console.log(data)
-                const users: string[] = Object.values(data)
+                const users: string[] = data
                 setUsers(users)
-                // setUsers(Object.values(data.userList))
-                // setUsers(data)
             })
         }
     }, [])
     useEffect(() => {
         if (!io) return;
+        if (once.current) {
+            once.current = false;
+            return
+        }
         socket.on('logout_response', (data) => {
             const users: string[] = Object.values(data)
             setUsers(users)
 
         })
+        once.current = true;
         return () => {
             socket.off('logout_response', (data) => {
                 const users: string[] = Object.values(data)

@@ -40,7 +40,7 @@ const HomeComponent: React.FC<Props> = ({ users, onInsertImage, auth, scrollRef,
                         return (<div key={index} className={`chat ${message.name === 'system' ? 'center' : message?.name === auth?.name ? 'right' : 'left'}`}>
                             {message.chat && message.chat}
                             <div className='username'>
-                                {message.name === 'system' ? '' : message.name === auth?.name ? '' : message.name}
+                                {message.name === 'system' ? '' : message.name}
                             </div>
                             <div>
 

@@ -28,33 +28,33 @@ const AuthBarContainer = () => {
     useEffect(() => {
         if (auth) {
 
-            const es = new EventSource('/sse')
-            const end = new Date(status.expires)
-            console.log(typeof end)
-            let restTime = '00:00:00'
-            // end.setMinutes(end.getMinutes() + 1)
+        }
+        const es = new EventSource('/sse')
+        const end = new Date(status.expires)
+        console.log(typeof end)
+        let restTime = '00:00:00'
+        // end.setMinutes(end.getMinutes() + 1)
 
 
 
-            es.onmessage = function (e: any) {
-                const server = new Date(parseInt(e.data, 10))
-                const remainingTime = (end.getTime() - server.getTime());
-                setRemainingTime(remainingTime)
-                if (server >= end) {
-                    setTime('00:00:00');
-                    es.close();
-                    logout()
-                } else {
-                    const seconds = ('0' + Math.floor((remainingTime / 1000) % 60)).slice(-2)
-                    const minutes = ('0' + Math.floor((remainingTime / 1000 / 60) % 60)).slice(-2)
-                    const hours = ('0' + Math.floor((remainingTime / 1000 / 60 / 60) % 60)).slice(-2)
-                    restTime = `${hours}:${minutes}:${seconds}`
-                    setTime(restTime)
-                }
+        es.onmessage = function (e: any) {
+            const server = new Date(parseInt(e.data, 10))
+            const remainingTime = (end.getTime() - server.getTime());
+            setRemainingTime(remainingTime)
+            if (server >= end) {
+                setTime('00:00:00');
+                es.close();
+                logout()
+            } else {
+                const seconds = ('0' + Math.floor((remainingTime / 1000) % 60)).slice(-2)
+                const minutes = ('0' + Math.floor((remainingTime / 1000 / 60) % 60)).slice(-2)
+                const hours = ('0' + Math.floor((remainingTime / 1000 / 60 / 60) % 60)).slice(-2)
+                restTime = `${hours}:${minutes}:${seconds}`
+                setTime(restTime)
             }
-            return () => {
-                es.close()
-            }
+        }
+        return () => {
+            es.close()
         }
     }, [status.expires])
     return (

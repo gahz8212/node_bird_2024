@@ -35,6 +35,8 @@ const LoginForm: React.FC<Props> = () => {
     useEffect(() => {
         if (auth) {
             socket.emit('login', auth.name)
+            //=>check결과 auth를 전달받았으면 
+            //==>socket.on('login',data=>{userList.add(data)})
             navigate('/home')
             try {
                 dispatch(chatActions.getChats())

@@ -3,8 +3,7 @@ const router = express.Router();
 const passport = require("passport");
 const bcrypt = require("bcrypt");
 const { User } = require("../models");
-
-// let users = [];
+const userList = new Set();
 router.post("/join", async (req, res) => {
   const { email, name, rank, password } = req.body;
   try {
@@ -32,14 +31,6 @@ router.post("/login", (req, res) => {
         if (loginError) {
           throw new Error(loginError);
         } else {
-          req.app
-            .get("io")
-            .of("/room")
-            .emit("chat", {
-              chat: `${req.user.name}님이 로그인 됨`,
-              name: "system",
-            });
-
           return res.status(200).json("login_ok");
         }
       });
@@ -56,7 +47,7 @@ router.post("/logout", (req, res) => {
       chat: `${req.user.name}님이 로그아웃 됨`,
       name: "system",
     });
-
+  userList.delete(req.user.name);
   req.logout((e) => {
     if (e) {
       return;
@@ -68,7 +59,12 @@ router.post("/logout", (req, res) => {
         secure: false,
         path: "/",
       });
-      res.send("logout_ok");
+      console.log(Array.from(userList.values()));
+      req.app
+        .get("io")
+        .of("/room")
+        .emit("logout_response", Array.from(userList.values()));
+      return res.status(200).json({ userList: Array.from(userList.values()) });
     });
   });
 });
@@ -78,9 +74,24 @@ router.get("/check", (req, res) => {
 
     let expires = Date.now() + 60000;
     req.session.cookie.expires = expires;
-    return res
-      .status(200)
-      .json({ auth: { id, name, rank }, expires: expires });
+    req.app
+      .get("io")
+      .of("/room")
+      .emit("chat", {
+        chat: `${req.user.name}님이 로그인 됨`,
+        name: "system",
+      });
+    console.log(Array.from(userList.values()));
+    req.app
+      .get("io")
+      .of("/room")
+      .emit("login_response", Array.from(userList.values()));
+    userList.add(req.user.name);
+    return res.status(200).json({
+      auth: { id, name, rank },
+      expires,
+      userList: Array.from(userList.values()),
+    });
   } catch (e) {
     return res.status(400).json(e.message);
   }
@@ -92,17 +103,6 @@ router.post("/extends", (req, res) => {
 
   let expires = new Date(Date.now() + 60000);
   req.session.cookie.expires = expires;
-  console.log(req.sessionID);
-  // res.setHeader(
-  //   "Set-Cookie",
-  //   `connect.sid=s%3A${
-  //     req.sessionID
-  //   }; Expires=${expires.toUTCString()}; HttpOnly; path=/`
-  // );
-
-  // console.log("after ", expires);
-  console.log("after ", req.session.cookie);
-
   res.status(200).json(expires.toUTCString());
 });
 module.exports = router;

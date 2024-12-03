@@ -8,7 +8,7 @@ type Props = {
     remainingTime: number
 }
 const AuthBarComponent: React.FC<Props> = ({ auth, logout, time, extends_auth, remainingTime }) => {
-    const [visible, setVisible] = useState(false)
+    // const [visible, setVisible] = useState(false)
 
     return (
         <>
@@ -28,15 +28,26 @@ const AuthBarComponent: React.FC<Props> = ({ auth, logout, time, extends_auth, r
                         </div>
                     </div>
                 </div>
-                {(remainingTime <= 20000 && remainingTime > 0) &&
+                {
+
                     <div
-                        // className={`expAlarm ${(remainingTime <= 20000 && remainingTime > 0) && visible ? 'visible' : 'hidden'}`}
-                        style={{ transition: '1s', background: 'gray', position: 'fixed', top: '50%', left: '50%', width: "200px", height: '200px' }}>{remainingTime}
-                        <button onClick={() => {
-                            extends_auth();
-                            setVisible(false)
-                        }
-                        }>연장</button><button onClick={() => { logout(); setVisible(false) }}>로그아웃</button></div>}
+                        className={`expAlarm ${(remainingTime <= 55000 && remainingTime > 0) ? 'visible' : 'hidden'}
+                        ${(remainingTime <= 25000 && remainingTime > 0) ? 'red' : 'blue'}`}>
+                        <div className="content">
+                            <p>몇 분 후면 자동으로 로그아웃이 됩니다.</p>
+                            <br />
+                            <p>시간 연장을 원하시면 </p>
+                            <p>아래 연장 버튼이나 F5 버튼을,</p>
+                            <br />
+                            <p>지금 로그아웃 하시려면</p>
+                            <p>아래 로그아웃 버튼을 눌러주세요.</p>
+                        </div>
+                        <div className="buttons">
+                            <button onClick={extends_auth}>연장</button>
+                            <button onClick={logout}>로그아웃</button>
+                        </div>
+
+                    </div>}
             </div >
             <div className="space"></div>
         </>

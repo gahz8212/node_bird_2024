@@ -7,6 +7,7 @@ function* checkSaga() {
       data: {
         auth: { id: number; name: string; rank: number };
         expires: string;
+        userList: string[];
       };
     } = yield call(authAPI.check);
     console.log(response.data);
@@ -17,9 +18,12 @@ function* checkSaga() {
 }
 function* logoutSaga() {
   try {
-    yield call(authAPI.logout);
-  } catch (e) {
+    const response: { data: string[] } = yield call(authAPI.logout);
+    console.log(response.data);
+    yield put(userActions.logoutSuccess(response.data));
+  } catch (e: any) {
     console.error(e);
+    yield put(userActions.logoutFailure(e.response.data));
   }
 }
 function* extends_auth() {

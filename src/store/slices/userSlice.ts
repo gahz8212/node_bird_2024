@@ -2,10 +2,12 @@ import { createSlice, createSelector } from "@reduxjs/toolkit";
 import { RootState } from "..";
 type State = {
   auth: { id: number; name: string; rank: number } | null;
+  userList: string[];
   status: { message: string; error: string; loading: boolean; expires: number };
 };
 const initialState: State = {
   auth: null,
+  userList: [],
   status: {
     message: "",
     error: "",
@@ -40,6 +42,7 @@ const userSlice = createSlice({
       state.status.error = "";
       state.status.expires = userInfo.expires;
       state.status.loading = false;
+      state.userList = userInfo.userList;
     },
     checkFailure: (state, { payload: error }) => {
       state.auth = null;
@@ -49,6 +52,12 @@ const userSlice = createSlice({
     },
     logout: (state) => {
       state.auth = null;
+    },
+    logoutSuccess: (state, { payload: userList }) => {
+      state.userList = userList;
+    },
+    logoutFailure: (state, { payload: error }) => {
+      state.status.error = error;
     },
     expires_init: (state) => {
       state.status.expires = Date.now();

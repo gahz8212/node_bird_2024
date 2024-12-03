@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 type Props = {
     auth: { name: string } | null;
@@ -31,8 +31,8 @@ const AuthBarComponent: React.FC<Props> = ({ auth, logout, time, extends_auth, r
                 {
 
                     <div
-                        className={`expAlarm ${(remainingTime <= 55000 && remainingTime > 0) ? 'visible' : 'hidden'}
-                        ${(remainingTime <= 25000 && remainingTime > 0) ? 'red' : 'blue'}`}>
+                        className={`expAlarm ${(remainingTime <= 1000 * 60 * 5 && remainingTime > 0) ? 'visible' : 'hidden'}
+                        ${(remainingTime <= 1000 * 60 * 2 && remainingTime > 0) ? 'red' : 'blue'}`}>
                         <div className="content">
                             <p>몇 분 후면 자동으로 로그아웃이 됩니다.</p>
                             <br />

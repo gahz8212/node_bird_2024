@@ -1,5 +1,5 @@
 const { Server } = require("socket.io");
-// const userList = new Set();
+const userList = new Set();
 function onlyForHandshake(middleware) {
   return (req, res, next) => {
     const isHandshake = req._query.sid === undefined;
@@ -29,19 +29,21 @@ module.exports = (app, server, sessionMiddleware, passport) => {
 
   const room = io.of("/room");
   // const chat = io.of("/chat");
-  room.on("connection", (socket) => {});
+  room.on("connection", (socket) => {
+    socket.join("chat");
+    socket.on("login", (data) => {
+      userList.add(data);
+      console.log(userList);
+      // const clientId = socket.id;
+      // console.log(Array.from(userList.values()));
+      // console.log("client:", app.get("client"));
+      socket.to("chat").emit("login_response", Array.from(userList.values()));
+    });
+  });
 };
 //     const req = socket.request;
 //     // console.log(`${req.user.name}이 room 네임스페이스에 연결됨.`);
 //     // console.log("req.session:", req.session);
-//     // socket.on("login", (data) => {
-//     //   // const clientId = socket.id;
-//     //   userList.add(data);
-//     //   console.log(userList);
-//     //   // console.log(Array.from(userList.values()));
-//     //   // console.log("client:", app.get("client"));
-//     //   socket.emit("login_response", Array.from(userList.values()));
-//     // });
 //     // socket.on("logout", (name) => {
 //     //   const array = Array.from(userList.values());
 //     //   const index = array.findIndex((value) => value === name);

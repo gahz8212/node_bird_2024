@@ -72,7 +72,7 @@ router.get("/check", (req, res) => {
   try {
     const { id, name, rank } = req.user;
 
-    let expires = Date.now() + 60000;
+    let expires = Date.now() + 1000 * 60 * 60;
     req.session.cookie.expires = expires;
     req.app
       .get("io")
@@ -85,6 +85,7 @@ router.get("/check", (req, res) => {
     req.app
       .get("io")
       .of("/room")
+      .to("chat")
       .emit("login_response", Array.from(userList.values()));
     userList.add(req.user.name);
     return res.status(200).json({
@@ -101,7 +102,7 @@ router.post("/extends", (req, res) => {
 
   req.session.touch();
 
-  let expires = new Date(Date.now() + 60000);
+  let expires = new Date(Date.now() + 1000 * 60 * 60);
   req.session.cookie.expires = expires;
   res.status(200).json(expires.toUTCString());
 });

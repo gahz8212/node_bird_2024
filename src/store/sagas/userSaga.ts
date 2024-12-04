@@ -18,12 +18,12 @@ function* checkSaga() {
 }
 function* logoutSaga() {
   try {
-    const response: { data: string[] } = yield call(authAPI.logout);
-    console.log(response.data);
-    yield put(userActions.logoutSuccess(response.data));
+  yield call(authAPI.logout);
+
+  
   } catch (e: any) {
     console.error(e);
-    yield put(userActions.logoutFailure(e.response.data));
+  
   }
 }
 function* extends_auth() {

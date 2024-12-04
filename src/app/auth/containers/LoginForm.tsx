@@ -7,7 +7,7 @@ import { authData, authActions } from '../../../store/slices/authSlice';
 import { userData, userActions } from '../../../store/slices/userSlice';
 import { chatActions } from '../../../store/slices/chatSlice';
 import io from 'socket.io-client';
-const socket = io('/room')
+const socket = io('/', { withCredentials: true, path: '/socket.io' })
 
 type Props = {}
 const LoginForm: React.FC<Props> = () => {
@@ -34,7 +34,7 @@ const LoginForm: React.FC<Props> = () => {
     }, [dispatch, status.message])
     useEffect(() => {
         if (auth) {
-            socket.emit('login', auth.name)
+            socket.connect();
             //=>check결과 auth를 전달받았으면 
             //==>socket.on('login',data=>{userList.add(data)})
             navigate('/home')

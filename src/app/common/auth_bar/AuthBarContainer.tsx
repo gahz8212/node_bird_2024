@@ -2,20 +2,24 @@ import React, { useState, useEffect } from 'react';
 import AuthBarComponent from './AuthBarComponent';
 import { useDispatch, useSelector } from 'react-redux';
 import { userData, userActions } from '../../../store/slices/userSlice';
-
+import { useNavigate } from 'react-router-dom'
 import io from 'socket.io-client'
 
-const socket = io('/room')
+const socket = io('/', { withCredentials: true, path: '/socket.io' })
 const AuthBarContainer = () => {
     const dispatch = useDispatch();
     const [time, setTime] = useState('')
     const { auth, status } = useSelector(userData)
     const [remainingTime, setRemainingTime] = useState<number>(0)
+    const navigate = useNavigate()
     const logout = () => {
+        socket.close();
         if (auth) {
             socket.emit('logout', auth.name)//clientId를 넣어줘야 한다
             dispatch(userActions.expires_init())
             dispatch(userActions.logout())
+            // navigate('/')
+
         }
         // window.location.reload();
         try {

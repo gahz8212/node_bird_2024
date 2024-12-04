@@ -11,7 +11,11 @@ function onlyForHandshake(middleware) {
   };
 }
 module.exports = (app, server, sessionMiddleware, passport) => {
-  const io = new Server(server);
+  const io = new Server(server, {
+    withCredentials: true,
+    path: "/socket.io",
+    pingTimeout: 30000,
+  });
   app.set("io", io);
 
   io.engine.use(onlyForHandshake(sessionMiddleware));
@@ -27,17 +31,23 @@ module.exports = (app, server, sessionMiddleware, passport) => {
     })
   );
 
-  const room = io.of("/room");
+  // const room = io.of("/room");
   // const chat = io.of("/chat");
-  room.on("connection", (socket) => {
+  io.sockets.on("connection", (socket) => {
+    const req = socket.request;
+
     socket.join("chat");
-    socket.on("login", (data) => {
-      userList.add(data);
-      console.log(userList);
-      // const clientId = socket.id;
-      // console.log(Array.from(userList.values()));
-      // console.log("client:", app.get("client"));
-      socket.to("chat").emit("login_response", Array.from(userList.values()));
+    console.log(`${req.user.name}이 room 네임스페이스에 연결됨.`);
+    userList.add(req.user.name);
+    console.log(userList);
+    socket.to("chat").emit("login_response", Array.from(userList.values()));
+
+    socket.on("disconnect", () => {
+      socket.leave("chat");
+      console.log(`${req.user.name}이 room 네임스페이스에 연결 해제됨.`);
+      userList.delete(req.user.name);
+      console.log("userList", userList);
+      socket.to("chat").emit("logout_response", Array.from(userList.values()));
     });
   });
 };

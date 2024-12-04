@@ -8,7 +8,7 @@ import io from 'socket.io-client'
 import axios from 'axios';
 
 // const socket = io('/chat')
-const socket = io('/room')
+const socket = io('/', { withCredentials: true, path: '/socket.io' })
 type Props = {}
 const HomeContainer: React.FC<Props> = () => {
     const dispatch = useDispatch();

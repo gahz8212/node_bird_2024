@@ -3,7 +3,7 @@ const router = express.Router();
 const passport = require("passport");
 const bcrypt = require("bcrypt");
 const { User } = require("../models");
-const userList = new Set();
+
 router.post("/join", async (req, res) => {
   const { email, name, rank, password } = req.body;
   try {
@@ -40,14 +40,15 @@ router.post("/login", (req, res) => {
   })(req, res);
 });
 router.post("/logout", (req, res) => {
-  req.app
-    .get("io")
-    .of("/room")
-    .emit("chat", {
-      chat: `${req.user.name}님이 로그아웃 됨`,
-      name: "system",
-    });
-  userList.delete(req.user.name);
+  // req.app
+  //   .get("io")
+  //   .of("/room")
+  //    .to('chat')
+  //   .emit("chat", {
+  //     chat: `${req.user.name}님이 로그아웃 됨`,
+  //     name: "system",
+  //   });
+
   req.logout((e) => {
     if (e) {
       return;
@@ -59,12 +60,8 @@ router.post("/logout", (req, res) => {
         secure: false,
         path: "/",
       });
-      console.log(Array.from(userList.values()));
-      req.app
-        .get("io")
-        .of("/room")
-        .emit("logout_response", Array.from(userList.values()));
-      return res.status(200).json({ userList: Array.from(userList.values()) });
+
+      return res.send("logout_ok");
     });
   });
 });
@@ -74,24 +71,18 @@ router.get("/check", (req, res) => {
 
     let expires = Date.now() + 1000 * 60 * 60;
     req.session.cookie.expires = expires;
-    req.app
-      .get("io")
-      .of("/room")
-      .emit("chat", {
-        chat: `${req.user.name}님이 로그인 됨`,
-        name: "system",
-      });
-    console.log(Array.from(userList.values()));
-    req.app
-      .get("io")
-      .of("/room")
-      .to("chat")
-      .emit("login_response", Array.from(userList.values()));
-    userList.add(req.user.name);
+    // req.app
+    //   .get("io")
+    //   .of("/room")
+    //   .to('chat')
+    //   .emit("chat", {
+    //     chat: `${req.user.name}님이 로그인 됨`,
+    //     name: "system",
+    //   });
+
     return res.status(200).json({
       auth: { id, name, rank },
       expires,
-      userList: Array.from(userList.values()),
     });
   } catch (e) {
     return res.status(400).json(e.message);

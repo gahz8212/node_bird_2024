@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AuthBarComponent from './AuthBarComponent';
 import { useDispatch, useSelector } from 'react-redux';
 import { userData, userActions } from '../../../store/slices/userSlice';
-import { useNavigate } from 'react-router-dom'
+// import { useNavigate } from 'react-router-dom'
 import io from 'socket.io-client'
 
 const socket = io('/', { withCredentials: true, path: '/socket.io' })
@@ -11,17 +11,17 @@ const AuthBarContainer = () => {
     const [time, setTime] = useState('')
     const { auth, status } = useSelector(userData)
     const [remainingTime, setRemainingTime] = useState<number>(0)
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
     const logout = () => {
-        socket.close();
+
         if (auth) {
-            socket.emit('logout', auth.name)//clientId를 넣어줘야 한다
+            socket.emit('logout_user', auth.name)//clientId를 넣어줘야 한다
             dispatch(userActions.expires_init())
             dispatch(userActions.logout())
-            // navigate('/')
-
+            try {
+                localStorage.removeItem('user')
+            } catch (e) { console.log('local storage goes bad') }
         }
-        // window.location.reload();
         try {
             localStorage.removeItem('user')
         } catch (e) { console.error('localstorage is not working') }
@@ -30,9 +30,7 @@ const AuthBarContainer = () => {
         dispatch(userActions.extends_auth())
     }
     useEffect(() => {
-        if (auth) {
 
-        }
         const es = new EventSource('/sse')
         const end = new Date(status.expires)
         console.log(typeof end)
@@ -61,6 +59,7 @@ const AuthBarContainer = () => {
             es.close()
         }
     }, [status.expires])
+
     return (
         <div>
             <AuthBarComponent auth={auth} logout={logout} time={time} extends_auth={extends_auth} remainingTime={remainingTime} />

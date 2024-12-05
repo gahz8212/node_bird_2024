@@ -48,6 +48,7 @@ const AuthBarComponent: React.FC<Props> = ({ auth, logout, time, extends_auth, r
                         </div>
 
                     </div>}
+
             </div >
             <div className="space"></div>
         </>

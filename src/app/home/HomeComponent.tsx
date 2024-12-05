@@ -23,9 +23,14 @@ const HomeComponent: React.FC<Props> = ({ users, onInsertImage, auth, scrollRef,
                     <input type="date" name="endDay" id="" />
                     <select name="user" id="" >
                         <option value="">전체</option>
-                        {/* 로그인 되어 있는 user리스트 가져오기*/}
-                        <option value="">테스트</option>
-                        <option value="">mysweet</option>
+
+                        {
+                            users && users.map(user =>
+                                <option value="">{user}</option>
+
+                            )
+                        }
+
                     </select>
                     <input type="text" name="phrase" id="" />
                     <button>검색</button>
@@ -38,10 +43,10 @@ const HomeComponent: React.FC<Props> = ({ users, onInsertImage, auth, scrollRef,
                         // console.log('message.name', message.name, 'auth.name:', auth?.name)
 
                         return (<div key={index} className={`chat ${message.name === 'system' ? 'center' : message?.name === auth?.name ? 'right' : 'left'}`}>
-                            {message.chat && message.chat}
                             <div className='username'>
-                                {message.name === 'system' ? '' : message.name}
+                                {message.name === 'system' ? '' : message.name === auth?.name ? "" : message.name}
                             </div>
+                            {message.chat && message.chat}
                             <div>
 
                                 {message.image && <img key={index} src={message.image} alt='img' width='100px'></img>}

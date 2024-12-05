@@ -67,6 +67,9 @@ const HomeContainer: React.FC<Props> = () => {
         }
     }, [])
     useEffect(() => {
+        const result = localStorage.getItem('users')?.split(',')
+        if (result)
+            setUsers(result)
         if (!io) return
         if (once.current) {
             once.current = false;
@@ -76,6 +79,13 @@ const HomeContainer: React.FC<Props> = () => {
             console.log('login_response_data', typeof data, data)
             // setUsers(data)
             const users: string[] = data
+            const usersString = users.toString();
+            // console.log(usersString)
+            try {
+
+                localStorage.removeItem('users')
+                localStorage.setItem('users', usersString)
+            } catch (e) { console.log('local storage is goes bad') }
             setUsers(users)
         })
         once.current = true;
@@ -95,6 +105,13 @@ const HomeContainer: React.FC<Props> = () => {
         }
         socket.on('logout_response', (data) => {
             const users: string[] = Object.values(data)
+            const usersString = users.toString();
+            try {
+                localStorage.removeItem('users')
+                localStorage.setItem('users', usersString)
+                const result = localStorage.getItem('users')
+                console.log(result)
+            } catch (e) { console.log('local storage is goes bad') }
             setUsers(users)
 
         })
@@ -109,12 +126,14 @@ const HomeContainer: React.FC<Props> = () => {
     }, [])
     useEffect(() => {
         setChats(prev => prev.concat(messages))
-        setTimeout(scrollToBottom, 1000)
+        setTimeout(scrollToBottom, 100)
 
     }, [messages])
     useEffect(() => {
-        scrollToBottom()
+        setTimeout(scrollToBottom, 1000)
+        // scrollToBottom()
     }, [chats])
+
     return (
         <div>
             <HomeComponent users={users} onInsertImage={onInsertImage} auth={auth} message={message} scrollRef={scrollRef} onChange={onChange} onSubmit={onSubmit} messages={chats} />

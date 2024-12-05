@@ -35,19 +35,26 @@ module.exports = (app, server, sessionMiddleware, passport) => {
   // const chat = io.of("/chat");
   io.sockets.on("connection", (socket) => {
     const req = socket.request;
-
     socket.join("chat");
     console.log(`${req.user.name}이 room 네임스페이스에 연결됨.`);
-    userList.add(req.user.name);
-    console.log(userList);
-    socket.to("chat").emit("login_response", Array.from(userList.values()));
+
+    socket.on("login_user", (data) => {
+      userList.add(data);
+      console.log(userList);
+      socket.to("chat").emit("login_response", Array.from(userList.values()));
+    });
+    socket.on("logout_user", (data) => {
+      userList.delete(data);
+      console.log(userList);
+      socket.to("chat").emit("logout_response", Array.from(userList.values()));
+    });
 
     socket.on("disconnect", () => {
       socket.leave("chat");
       console.log(`${req.user.name}이 room 네임스페이스에 연결 해제됨.`);
-      userList.delete(req.user.name);
-      console.log("userList", userList);
-      socket.to("chat").emit("logout_response", Array.from(userList.values()));
+      // userList.delete(req.user.name);
+      // console.log("userList", userList);
+      // socket.to("chat").emit("logout_response", Array.from(userList.values()));
     });
   });
 };

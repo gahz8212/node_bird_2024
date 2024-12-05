@@ -33,10 +33,7 @@ router.post("/images", upload.array("images"), async (req, res) => {
     }));
     console.log("images", images);
     // const { id } = req.params;
-    req.app
-      .get("io")
-      // .of("/room")
-      .emit("chat", { name: req.user.name, image: images });
+    req.app.get("io").emit("chat", { name: req.user.name, image: images });
 
     return res.status(200).json("image_ok");
   } catch (e) {
@@ -51,7 +48,6 @@ router.post("/chat", async (req, res) => {
   user.addChats(chats);
   req.app
     .get("io")
-    // .of("/room")
     .to("chat")
     .emit("chat", { chat: message, name: req.user.name });
   return res.send("ok");

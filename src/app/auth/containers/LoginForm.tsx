@@ -34,10 +34,11 @@ const LoginForm: React.FC<Props> = () => {
     }, [dispatch, status.message])
     useEffect(() => {
         if (auth) {
-            socket.connect();
+            // socket.connect();
             //=>check결과 auth를 전달받았으면 
             //==>socket.on('login',data=>{userList.add(data)})
             navigate('/home')
+            socket.emit('login_user', auth.name)
             try {
                 dispatch(chatActions.getChats())
                 localStorage.setItem("user", JSON.stringify(auth))

@@ -40,14 +40,14 @@ router.post("/login", (req, res) => {
   })(req, res);
 });
 router.post("/logout", (req, res) => {
-  // req.app
-  //   .get("io")
-  //   .of("/room")
-  //    .to('chat')
-  //   .emit("chat", {
-  //     chat: `${req.user.name}님이 로그아웃 됨`,
-  //     name: "system",
-  //   });
+  req.app
+    .get("io")
+
+    .to("chat")
+    .emit("chat", {
+      chat: `${req.user.name}님이 로그아웃 하셨습니다.`,
+      name: "system",
+    });
 
   req.logout((e) => {
     if (e) {
@@ -71,14 +71,14 @@ router.get("/check", (req, res) => {
 
     let expires = Date.now() + 1000 * 60 * 60;
     req.session.cookie.expires = expires;
-    // req.app
-    //   .get("io")
-    //   .of("/room")
-    //   .to('chat')
-    //   .emit("chat", {
-    //     chat: `${req.user.name}님이 로그인 됨`,
-    //     name: "system",
-    //   });
+    req.app
+      .get("io")
+      // .of("/room")
+      .to("chat")
+      .emit("chat", {
+        chat: `${req.user.name}님이 로그인 하셨습니다.`,
+        name: "system",
+      });
 
     return res.status(200).json({
       auth: { id, name, rank },

@@ -30,12 +30,12 @@
     border-radius: 8px;
     // background: lightblue;
     position: fixed;
-    top: 10%;
+    top: 20%;
     left: 50%;
-    transform: translateX(-50%);
     width: 400px;
     height: 250px;
     transition: 0.8s;
+    // transition: transform 0.8s;
     &.red {
       transition: 2s;
       background-color: orange;
@@ -44,9 +44,11 @@
       background-color: lightblue;
     }
     &.visible {
+      transform: translateX(-50%);
       opacity: 1;
     }
     &.hidden {
+      transform: translateX(250%);
       opacity: 0;
     }
     .buttons {
